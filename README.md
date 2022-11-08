@@ -3,6 +3,7 @@ This project is inteded as a template for working with OVR hand tracking in Unit
 * The [Oculus Integration SDK](https://developer.oculus.com/downloads/package/unity-integration/) pre-installed and configured, along with XR Plugin Management.
 * The [recommended projects settings](https://developer.oculus.com/documentation/unity/unity-conf-settings/) by Oculus already configured.
 * A minimal [Assembly Definition](https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html) structure to speed up compile times.
+* [Git Large File Storage](https://git-lfs.github.com/) pre-installed and `.gitattributes` file pre-configured for Unity.
 
 ## Where to put your code
 To speed up compile times, the project splits up your code from third party code to avoid recompiling files which have not changed. This means that your code should live in the `Assets/Project/Runtime` directory. This also means that you must update the `Project.Runtime.asmdef` Assembly Definition file when importing third party libraries. In some IDEs such as Rider 2022 this can be done for you automatically.
