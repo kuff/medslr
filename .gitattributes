@@ -1,3 +1,6 @@
+*.dylib
+*.bundle
+
 ## from https://gist.github.com/nemotoo/b8a1c3a0f1225bb9231979f389fd4f3f ##
 
 *.cs diff=csharp text
