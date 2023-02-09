@@ -57,7 +57,7 @@ namespace Oculus.Interaction
             this.BeginStart(ref _started, () => base.Start());
             if (_pointableElement != null)
             {
-                Assert.IsNotNull(PointableElement);
+                this.AssertField(PointableElement, nameof(PointableElement));
             }
             this.EndStart(ref _started);
         }

@@ -41,7 +41,7 @@ namespace Oculus.Interaction.Input
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(Controller);
+            this.AssertField(Controller, nameof(Controller));
         }
 
         public Handedness Handedness => Controller.Handedness;
@@ -78,11 +78,6 @@ namespace Oculus.Interaction.Input
         public bool IsButtonUsageAllActive(ControllerButtonUsage buttonUsage)
         {
             return Controller.IsButtonUsageAllActive(buttonUsage);
-        }
-
-        public bool TryGetAspect<TAspect>(out TAspect aspect) where TAspect : class
-        {
-            return Controller.TryGetAspect(out aspect);
         }
 
         #region Inject

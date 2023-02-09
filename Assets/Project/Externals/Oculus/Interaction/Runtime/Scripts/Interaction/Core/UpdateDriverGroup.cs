@@ -28,7 +28,7 @@ namespace Oculus.Interaction
         private List<MonoBehaviour> _updateDrivers;
         protected List<IUpdateDriver> Drivers;
 
-        [SerializeField]
+        [SerializeField, Min(1)]
         private int _iterations = 3;
 
         #region Properties
@@ -54,12 +54,8 @@ namespace Oculus.Interaction
         // Start is called before the first frame update
         protected virtual void Start()
         {
-            foreach (IUpdateDriver driver in Drivers)
-            {
-                Assert.IsNotNull(driver);
-            }
-
-            Assert.IsTrue(_iterations > 0);
+            this.AssertCollectionItems(Drivers, nameof(Drivers));
+            this.AssertIsTrue(_iterations > 0, $"{AssertUtils.Nicify(nameof(_iterations))} must be bigger than {0}.");
         }
 
         // Update is called once per frame

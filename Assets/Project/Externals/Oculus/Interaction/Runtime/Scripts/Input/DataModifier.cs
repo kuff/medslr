@@ -89,7 +89,7 @@ namespace Oculus.Interaction.Input
         protected override void Start()
         {
             base.Start();
-            Assert.IsNotNull(ModifyDataFromSource);
+            this.AssertField(ModifyDataFromSource, nameof(ModifyDataFromSource));
         }
 
         #region Inject

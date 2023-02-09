@@ -10,6 +10,7 @@ ANY KIND, either express or implied. See the License for the specific language g
 permissions and limitations under the License.
 ************************************************************************************/
 
+using Oculus.Interaction.Grab;
 using UnityEngine;
 
 namespace Oculus.Interaction.HandGrab
@@ -18,7 +19,7 @@ namespace Oculus.Interaction.HandGrab
     {
         public bool HasHandPose;
         public Pose SnapPose;
-        public float Score;
+        public GrabPoseScore Score;
         public HandPose HandPose;
 
         public HandGrabResult()

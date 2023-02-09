@@ -24,7 +24,6 @@ using Oculus.Interaction.Input;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Oculus.Interaction.HandGrab
 {
@@ -37,7 +36,7 @@ namespace Oculus.Interaction.HandGrab
     /// </summary>
     [Serializable]
     public class DistanceHandGrabInteractable : PointerInteractable<DistanceHandGrabInteractor, DistanceHandGrabInteractable>,
-        IRigidbodyRef, IHandGrabbable, IDistanceInteractable
+        IRigidbodyRef, IHandGrabbable, IRelativeToRef, ICollidersRef
     {
         [Header("Grab")]
 
@@ -114,7 +113,7 @@ namespace Oculus.Interaction.HandGrab
 
         private GrabPoseFinder _grabPoseFinder;
 
-        private readonly PoseMeasureParameters SCORE_MODIFIER = new PoseMeasureParameters(0.1f, 1f);
+        private readonly PoseMeasureParameters SCORE_MODIFIER = new PoseMeasureParameters(1f);
 
         #region editor events
         protected virtual void Reset()
@@ -144,16 +143,17 @@ namespace Oculus.Interaction.HandGrab
         protected override void Start()
         {
             this.BeginStart(ref _started, () => base.Start());
-            Assert.IsNotNull(Rigidbody, "The rigidbody is missing");
+            this.AssertField(Rigidbody, nameof(Rigidbody));
             Colliders = Rigidbody.GetComponentsInChildren<Collider>();
-            Assert.IsTrue(Colliders.Length > 0,
-                "The associated Rigidbody must have at least one Collider.");
+            this.AssertCollectionField(Colliders, nameof(Colliders), 
+                whyItFailed:$"The associated {nameof(Rigidbody)} must have at least one collider.");
+
             if (MovementProvider == null)
             {
                 MoveTowardsTargetProvider movementProvider = this.gameObject.AddComponent<MoveTowardsTargetProvider>();
                 InjectOptionalMovementProvider(movementProvider);
             }
-            _grabPoseFinder = new GrabPoseFinder(_handGrabPoses, RelativeTo, this.transform);
+            _grabPoseFinder = new GrabPoseFinder(_handGrabPoses);
             this.EndStart(ref _started);
         }
 
@@ -165,17 +165,6 @@ namespace Oculus.Interaction.HandGrab
             return movement;
         }
 
-        public bool CalculateBestPose(in Pose userPose, float handScale, Handedness handedness,
-            ref HandGrabResult result)
-        {
-            return _grabPoseFinder.FindBestPose(userPose, handScale, handedness, SCORE_MODIFIER, ref result);
-        }
-
-        public bool UsesHandPose()
-        {
-            return _grabPoseFinder.UsesHandPose();
-        }
-
         public void ApplyVelocities(Vector3 linearVelocity, Vector3 angularVelocity)
         {
             if (_physicsGrabbable == null)
@@ -185,14 +174,39 @@ namespace Oculus.Interaction.HandGrab
             _physicsGrabbable.ApplyVelocities(linearVelocity, angularVelocity);
         }
 
+        public bool CalculateBestPose(in Pose userPose, float handScale, Handedness handedness,
+            ref HandGrabResult result)
+        {
+            GrabPoseFinder.FindResult findResult = _grabPoseFinder.FindBestPose(userPose,
+                handScale, handedness, SCORE_MODIFIER, ref result);
+            if (findResult == GrabPoseFinder.FindResult.NotFound)
+            {
+                result.HasHandPose = false;
+                result.Score = new GrabPoseScore(userPose.position, this.transform.position);
+                result.SnapPose = new Pose(RelativeTo.Delta(this.transform).position, Quaternion.Inverse(RelativeTo.rotation) * userPose.rotation);
+            }
+
+            return findResult != GrabPoseFinder.FindResult.NotCompatible;
+        }
+
+        public bool UsesHandPose()
+        {
+            return _grabPoseFinder.UsesHandPose();
+        }
+
+        public bool SupportsHandedness(Handedness handedness)
+        {
+            return _grabPoseFinder.SupportsHandedness(handedness);
+        }
+
         #region Inject
 
-        public void InjectAllDistanceHandGrabInteractable(Rigidbody rigidbody,
-            GrabTypeFlags supportedGrabTypes,
+        public void InjectAllDistanceHandGrabInteractable(GrabTypeFlags supportedGrabTypes,
+            Rigidbody rigidbody,
             GrabbingRule pinchGrabRules, GrabbingRule palmGrabRules)
         {
-            InjectRigidbody(rigidbody);
             InjectSupportedGrabTypes(supportedGrabTypes);
+            InjectRigidbody(rigidbody);
             InjectPinchGrabRules(pinchGrabRules);
             InjectPalmGrabRules(palmGrabRules);
         }
@@ -200,11 +214,6 @@ namespace Oculus.Interaction.HandGrab
         public void InjectOptionalPhysicsObject(PhysicsGrabbable physicsObject)
         {
             _physicsGrabbable = physicsObject;
-        }
-
-        public void InjectRigidbody(Rigidbody rigidbody)
-        {
-            _rigidbody = rigidbody;
         }
 
         public void InjectSupportedGrabTypes(GrabTypeFlags supportedGrabTypes)
@@ -220,6 +229,11 @@ namespace Oculus.Interaction.HandGrab
         public void InjectPalmGrabRules(GrabbingRule palmGrabRules)
         {
             _palmGrabRules = palmGrabRules;
+        }
+
+        public void InjectRigidbody(Rigidbody rigidbody)
+        {
+            _rigidbody = rigidbody;
         }
 
         public void InjectOptionalHandGrabPoses(List<HandGrabPose> handGrabPoses)

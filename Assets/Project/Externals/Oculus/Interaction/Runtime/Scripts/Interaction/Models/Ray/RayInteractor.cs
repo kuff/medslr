@@ -76,8 +76,8 @@ namespace Oculus.Interaction
         protected override void Start()
         {
             base.Start();
-            Assert.IsNotNull(Selector);
-            Assert.IsNotNull(_rayOrigin);
+            this.AssertField(Selector, nameof(Selector));
+            this.AssertField(_rayOrigin, nameof(_rayOrigin));
         }
 
         protected override void DoPreprocess()
@@ -108,7 +108,7 @@ namespace Oculus.Interaction
             RayInteractable closestInteractable = null;
             float closestDist = float.MaxValue;
             Vector3 candidatePosition = Vector3.zero;
-            IEnumerable<RayInteractable> interactables = RayInteractable.Registry.List(this);
+            var interactables = RayInteractable.Registry.List(this);
 
             foreach (RayInteractable interactable in interactables)
             {

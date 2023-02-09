@@ -20,8 +20,6 @@
 
 using Oculus.Interaction.Input;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 
 namespace Oculus.Interaction.PoseDetection
 {
@@ -31,26 +29,37 @@ namespace Oculus.Interaction.PoseDetection
     /// </summary>
     public class JointDistanceActiveState : MonoBehaviour, IActiveState
     {
+        [Tooltip("The IHand that JointIdA will be sourced from.")]
         [SerializeField, Interface(typeof(IHand))]
         private MonoBehaviour _handA;
         private IHand HandA;
 
+        [Tooltip("The joint of HandA to use for distance check.")]
         [SerializeField]
         private HandJointId _jointIdA;
 
+        [Tooltip("The IHand that JointIdB will be sourced from.")]
         [SerializeField, Interface(typeof(IHand))]
         private MonoBehaviour _handB;
         private IHand HandB;
 
+        [Tooltip("The joint of HandB to use for distance check.")]
         [SerializeField]
         private HandJointId _jointIdB;
 
+        [Tooltip("The ActiveState will become Active when joints are " +
+            "within this distance from each other.")]
         [SerializeField]
         private float _distance = 0.05f;
 
+        [Tooltip("The distance value will be modified by this width " +
+            "to create differing enter/exit thresholds. Used to prevent " +
+            "chattering at the threshold edge.")]
         [SerializeField]
         private float _thresholdWidth = 0.02f;
 
+        [Tooltip("A new state must be maintaned for at least this " +
+            "many seconds before the Active property changes.")]
         [SerializeField]
         private float _minTimeInState = 0.05f;
 
@@ -81,8 +90,8 @@ namespace Oculus.Interaction.PoseDetection
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(HandA);
-            Assert.IsNotNull(HandB);
+            this.AssertField(HandA, nameof(HandA));
+            this.AssertField(HandB, nameof(HandB));
         }
 
         protected virtual void Update()

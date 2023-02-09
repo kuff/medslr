@@ -153,10 +153,7 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            foreach (IInteractable interactable in Interactables)
-            {
-                Assert.IsNotNull(interactable);
-            }
+            this.AssertCollectionItems(Interactables, nameof(Interactables));
 
             if (Data == null)
             {

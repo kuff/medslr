@@ -126,9 +126,9 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(_rayInteractor);
-            Assert.IsNotNull(_renderer);
-            Assert.IsNotNull(_materialPropertyBlockEditor);
+            this.AssertField(_rayInteractor, nameof(_rayInteractor));
+            this.AssertField(_renderer, nameof(_renderer));
+            this.AssertField(_materialPropertyBlockEditor, nameof(_materialPropertyBlockEditor));
             this.EndStart(ref _started);
         }
 

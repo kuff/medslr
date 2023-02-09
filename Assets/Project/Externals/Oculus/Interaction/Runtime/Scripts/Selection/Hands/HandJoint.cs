@@ -20,8 +20,6 @@
 
 using Oculus.Interaction.Input;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 
 namespace Oculus.Interaction
 {
@@ -90,7 +88,7 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(Hand);
+            this.AssertField(Hand, nameof(Hand));
             this.EndStart(ref _started);
         }
 

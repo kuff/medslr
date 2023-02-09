@@ -21,7 +21,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Oculus.Interaction
 {
@@ -43,8 +42,8 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(_pokeInteractable);
-            Assert.IsNotNull(_buttonBaseTransform);
+            this.AssertField(_pokeInteractable, nameof(_pokeInteractable));
+            this.AssertField(_buttonBaseTransform, nameof(_buttonBaseTransform));
             _pokeInteractors = new HashSet<PokeInteractor>();
             _maxOffsetAlongNormal = Vector3.Dot(transform.position - _buttonBaseTransform.position, -1f * _buttonBaseTransform.forward);
             Vector3 pointOnPlane = transform.position - _maxOffsetAlongNormal * _buttonBaseTransform.forward;

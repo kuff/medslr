@@ -7,9 +7,9 @@
  */
 
 using System;
-using Facebook.WitAi.Data;
+using Meta.WitAi.Data;
 
-namespace Facebook.WitAi.Dictation.Data
+namespace Meta.WitAi.Dictation.Data
 {
     [Serializable]
     public class DictationSession : VoiceSession

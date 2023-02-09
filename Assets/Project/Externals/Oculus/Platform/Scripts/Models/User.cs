@@ -15,7 +15,7 @@ namespace Oculus.Platform.Models
     public readonly string DisplayName;
     public readonly UInt64 ID;
     public readonly string ImageURL;
-    /// DEPRECATED. Will be removed from headers at version v49.
+    /// DEPRECATED. Will be removed from headers at version v51.
     public readonly string InviteToken;
     public readonly string OculusID;
     /// Human readable string of what the user is currently doing. Not intended to

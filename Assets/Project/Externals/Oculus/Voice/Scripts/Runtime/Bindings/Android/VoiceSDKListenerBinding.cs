@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Lib;
+using Meta.WitAi;
+using Meta.WitAi.Events;
+using Meta.WitAi.Json;
 using UnityEngine;
 
 namespace Oculus.Voice.Bindings.Android
@@ -48,7 +48,7 @@ namespace Oculus.Voice.Bindings.Android
 
         public void onResponse(string responseJson)
         {
-            WitResponseNode responseData = WitResponseJson.Parse(responseJson);
+            WitResponseNode responseData = WitResponseNode.Parse(responseJson);
             if (responseData != null)
             {
                 VoiceEvents.OnResponse?.Invoke(responseData);
@@ -57,7 +57,7 @@ namespace Oculus.Voice.Bindings.Android
 
         public void onPartialResponse(string responseJson)
         {
-            WitResponseNode responseData = WitResponseJson.Parse(responseJson);
+            WitResponseNode responseData = WitResponseNode.Parse(responseJson);
             if (responseData != null && responseData.HasResponse())
             {
                 VoiceEvents.OnPartialResponse?.Invoke(responseData);

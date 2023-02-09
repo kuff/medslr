@@ -65,15 +65,15 @@ namespace Oculus.Interaction
         {
             this.BeginStart(ref _started, () => base.Start());
 
-            if (OneGrabTransformer != null)
+            if (_oneGrabTransformer != null)
             {
-                Assert.IsNotNull(OneGrabTransformer);
+                this.AssertField(OneGrabTransformer, nameof(OneGrabTransformer));
                 OneGrabTransformer.Initialize(this);
             }
 
-            if (TwoGrabTransformer != null)
+            if (_twoGrabTransformer != null)
             {
-                Assert.IsNotNull(TwoGrabTransformer);
+                this.AssertField(TwoGrabTransformer, nameof(TwoGrabTransformer));
                 TwoGrabTransformer.Initialize(this);
             }
 

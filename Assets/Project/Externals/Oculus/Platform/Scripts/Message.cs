@@ -102,6 +102,7 @@ namespace Oculus.Platform
       AssetFile_Status                                    = 0x02D32F60,
       AssetFile_StatusById                                = 0x5D955D38,
       AssetFile_StatusByName                              = 0x41CFDA50,
+      Avatar_LaunchAvatarEditor                           = 0x05F1E153,
       Challenges_Create                                   = 0x6859D641,
       Challenges_DeclineInvite                            = 0x568E76C0,
       Challenges_Delete                                   = 0x264885CA,
@@ -248,12 +249,12 @@ namespace Oculus.Platform
       /// Sent to indicate download progress for asset files.
       Notification_AssetFile_DownloadUpdate = 0x2FDD0CCD,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Result of a leader picking an application for CAL launch.
       Notification_Cal_FinalizeApplication = 0x750C5099,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Application that the group leader has proposed for a CAL launch.
       Notification_Cal_ProposeApplication = 0x2E7451F5,
@@ -285,7 +286,7 @@ namespace Oculus.Platform
       /// livestreaming status.
       Notification_Livestreaming_StatusChange = 0x2247596E,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Indicates that a match has been found, for example after calling
       /// Matchmaking.Enqueue(). Use Message.GetRoom() to extract the matchmaking
@@ -299,20 +300,20 @@ namespace Oculus.Platform
       /// new list of sessions.
       Notification_NetSync_SessionsChanged = 0x387E7F36,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Indicates that a connection has been established or there's been an error.
       /// Use NetworkingPeer.GetState() to get the result; as above,
       /// NetworkingPeer.GetID() returns the ID of the peer this message is for.
       Notification_Networking_ConnectionStateChange = 0x5E02D49A,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Indicates that another user is attempting to establish a P2P connection
       /// with us. Use NetworkingPeer.GetID() to extract the ID of the peer.
       Notification_Networking_PeerConnectRequest = 0x4D31E2CF,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Generated in response to Net.Ping(). Either contains ping time in
       /// microseconds or indicates that there was a timeout.
@@ -321,7 +322,7 @@ namespace Oculus.Platform
       /// Indicates that party has been updated
       Notification_Party_PartyUpdate = 0x1D118AB2,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Indicates that the user has accepted an invitation, for example in Oculus
       /// Home. Use Message.GetString() to extract the ID of the room that the user
@@ -331,7 +332,7 @@ namespace Oculus.Platform
       /// Note that you must call Rooms.Join() if you want to actually join the room.
       Notification_Room_InviteAccepted = 0x6D1071B1,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Handle this to notify the user when they've received an invitation to join
       /// a room in your game. You can use this in lieu of, or in addition to,
@@ -339,7 +340,7 @@ namespace Oculus.Platform
       /// Notifications.GetRoomInviteNotifications().
       Notification_Room_InviteReceived = 0x6A499D54,
 
-      /// DEPRECATED. Will be removed from headers at version v49.
+      /// DEPRECATED. Will be removed from headers at version v51.
       ///
       /// Indicates that the current room has been updated. Use Message.GetRoom() to
       /// extract the updated room.
@@ -347,7 +348,7 @@ namespace Oculus.Platform
 
       /// DEPRECATED. Do not use or expose further. Use
       /// MessageType.Notification_GroupPresence_InvitationsSent instead. Will be
-      /// removed from headers at version v49.
+      /// removed from headers at version v51.
       Notification_Session_InvitationsSent = 0x07F9C880,
 
       /// Sent when another user is attempting to establish a VoIP connection. Use
@@ -414,6 +415,7 @@ namespace Oculus.Platform
     public virtual AssetFileDownloadCancelResult GetAssetFileDownloadCancelResult() { return null; }
     public virtual AssetFileDownloadResult GetAssetFileDownloadResult() { return null; }
     public virtual AssetFileDownloadUpdate GetAssetFileDownloadUpdate() { return null; }
+    public virtual AvatarEditorResult GetAvatarEditorResult() { return null; }
     public virtual BlockedUserList GetBlockedUserList() { return null; }
     public virtual CalApplicationFinalized GetCalApplicationFinalized() { return null; }
     public virtual CalApplicationProposed GetCalApplicationProposed() { return null; }
@@ -553,6 +555,10 @@ namespace Oculus.Platform
 
         case Message.MessageType.Notification_AssetFile_DownloadUpdate:
           message = new MessageWithAssetFileDownloadUpdate(messageHandle);
+          break;
+
+        case Message.MessageType.Avatar_LaunchAvatarEditor:
+          message = new MessageWithAvatarEditorResult(messageHandle);
           break;
 
         case Message.MessageType.User_GetBlockedUsers:
@@ -1091,6 +1097,18 @@ namespace Oculus.Platform
       var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
       var obj = CAPI.ovr_Message_GetAssetFileDownloadUpdate(msg);
       return new AssetFileDownloadUpdate(obj);
+    }
+
+  }
+  public class MessageWithAvatarEditorResult : Message<AvatarEditorResult>
+  {
+    public MessageWithAvatarEditorResult(IntPtr c_message) : base(c_message) { }
+    public override AvatarEditorResult GetAvatarEditorResult() { return Data; }
+    protected override AvatarEditorResult GetDataFromMessage(IntPtr c_message)
+    {
+      var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
+      var obj = CAPI.ovr_Message_GetAvatarEditorResult(msg);
+      return new AvatarEditorResult(obj);
     }
 
   }

@@ -135,9 +135,9 @@ namespace Oculus.Interaction
         {
             this.BeginStart(ref _started);
 
-            Assert.IsNotNull(_handMaterialPropertyBlockEditor);
-            Assert.IsNotNull(HandGrab);
-            Assert.IsNotNull(Interactor);
+            this.AssertField(_handMaterialPropertyBlockEditor, nameof(_handMaterialPropertyBlockEditor));
+            this.AssertField(HandGrab, nameof(HandGrab));
+            this.AssertField(Interactor, nameof(Interactor));
 
             this.EndStart(ref _started);
         }

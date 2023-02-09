@@ -74,7 +74,7 @@ namespace Oculus.Interaction
         protected override void Start()
         {
             this.BeginStart(ref _started, () => base.Start());
-            Assert.IsNotNull(Rigidbody);
+            this.AssertField(Rigidbody, nameof(Rigidbody));
             if (_registry == null)
             {
                 _registry = new CollisionInteractionRegistry<SnapInteractor, SnapInteractable>();

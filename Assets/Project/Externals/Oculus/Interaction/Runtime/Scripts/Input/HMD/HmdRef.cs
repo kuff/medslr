@@ -29,7 +29,7 @@ namespace Oculus.Interaction.Input
     /// </summary>
     public class HmdRef : MonoBehaviour, IHmd
     {
-        [SerializeField, Interface(typeof(Hmd))]
+        [SerializeField, Interface(typeof(IHmd))]
         private MonoBehaviour _hmd;
         private IHmd Hmd;
 
@@ -46,12 +46,12 @@ namespace Oculus.Interaction.Input
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(Hmd);
+            this.AssertField(Hmd, nameof(Hmd));
         }
 
-        public bool GetRootPose(out Pose pose)
+        public bool TryGetRootPose(out Pose pose)
         {
-            return Hmd.GetRootPose(out pose);
+            return Hmd.TryGetRootPose(out pose);
         }
 
         #region Inject

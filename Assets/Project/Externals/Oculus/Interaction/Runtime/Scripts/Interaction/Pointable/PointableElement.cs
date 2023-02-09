@@ -91,7 +91,7 @@ namespace Oculus.Interaction
 
             if (_forwardElement)
             {
-                Assert.IsNotNull(ForwardElement);
+                this.AssertField(ForwardElement, nameof(ForwardElement));
             }
 
             _points = new List<Pose>();

@@ -19,9 +19,9 @@
  */
 
 using UnityEngine;
-using Facebook.WitAi.Dictation;
-using Facebook.WitAi.Dictation.Data;
-using Facebook.WitAi.Dictation.Events;
+using Meta.WitAi.Dictation;
+using Meta.WitAi.Dictation.Data;
+using Meta.WitAi.Dictation.Events;
 
 namespace Oculus.Voice.Dictation.Bindings.Android
 {

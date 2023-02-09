@@ -20,15 +20,12 @@
 
 using UnityEngine;
 using UnityEditor;
-using Facebook.WitAi.Windows;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Data.Configuration;
-using Facebook.WitAi.Data.Intents;
-using Facebook.WitAi.Data.Entities;
-using Facebook.WitAi.Data.Traits;
-using Facebook.WitAi.TTS;
-using Facebook.WitAi.TTS.Editor;
-using Facebook.WitAi.TTS.Editor.Preload;
+using Meta.WitAi.Windows;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Data.Entities;
+using Meta.WitAi.TTS.Editor;
+using Meta.WitAi.TTS.Editor.Preload;
+using Meta.WitAi.Data.Info;
 using Oculus.Voice.Windows;
 
 namespace Oculus.Voice.Utility
@@ -59,22 +56,22 @@ namespace Oculus.Voice.Utility
         {
 
         }
-        [CustomPropertyDrawer(typeof(WitApplication))]
+        [CustomPropertyDrawer(typeof(WitAppInfo))]
         public class VoiceCustomApplicationPropertyDrawer : VoiceApplicationDetailProvider
         {
 
         }
-        [CustomPropertyDrawer(typeof(WitIntent))]
+        [CustomPropertyDrawer(typeof(WitIntentInfo))]
         public class VoiceCustomIntentPropertyDrawer : WitIntentPropertyDrawer
         {
 
         }
-        [CustomPropertyDrawer(typeof(WitEntity))]
+        [CustomPropertyDrawer(typeof(WitEntityInfo))]
         public class VoiceCustomEntityPropertyDrawer : WitEntityPropertyDrawer
         {
 
         }
-        [CustomPropertyDrawer(typeof(WitTrait))]
+        [CustomPropertyDrawer(typeof(WitTraitInfo))]
         public class VoiceCustomTraitPropertyDrawer : WitTraitPropertyDrawer
         {
 

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-using Facebook.WitAi.Configuration;
+using Meta.WitAi.Configuration;
 using Oculus.Voice.Dictation.Configuration;
 using UnityEngine;
 

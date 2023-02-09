@@ -165,7 +165,26 @@ public class OVRProjectConfigEditor : Editor
                     ref projectConfig.trackedKeyboardSupport, ref hasModified);
 
                 // Anchor Support
-                OVREditorUtil.SetupEnumField(projectConfig, "Anchor Support", ref projectConfig.anchorSupport, ref hasModified);
+                using (new EditorGUI.DisabledScope(projectConfig.sharedAnchorSupport !=
+                                                   OVRProjectConfig.FeatureSupport.None))
+                {
+                    var tooltip = projectConfig.sharedAnchorSupport != OVRProjectConfig.FeatureSupport.None
+                        ? "Anchor Support is required for Shared Spatial Anchor Support."
+                        : "";
+                    OVREditorUtil.SetupEnumField(projectConfig, new GUIContent("Anchor Support", tooltip), ref projectConfig.anchorSupport, ref hasModified);
+                }
+
+                OVREditorUtil.SetupEnumField(projectConfig,
+                    new GUIContent("Shared Spatial Anchor Support", "Enables support for sharing spatial anchors with other users. This requires Anchor Support to be enabled."),
+                    ref projectConfig.sharedAnchorSupport, ref hasModified);
+
+                if (projectConfig.sharedAnchorSupport != OVRProjectConfig.FeatureSupport.None &&
+                    projectConfig.anchorSupport != OVRProjectConfig.AnchorSupport.Enabled)
+                {
+                    projectConfig.anchorSupport = OVRProjectConfig.AnchorSupport.Enabled;
+                    hasModified = true;
+                }
+
 
                 // Body Tracking Support
                 OVREditorUtil.SetupEnumField(projectConfig, "Body Tracking Support", ref projectConfig.bodyTrackingSupport, ref hasModified);
@@ -205,10 +224,10 @@ public class OVRProjectConfigEditor : Editor
                         "If checked, application can work in both 6DoF and 3DoF modes. It's highly recommended to keep it unchecked unless your project strongly needs the 3DoF head tracking."),
                     ref projectConfig.allowOptional3DofHeadTracking, ref hasModified);
 
-                // Enable passthrough capability
-                OVREditorUtil.SetupBoolField(projectConfig, new GUIContent("Passthrough Capability Enabled",
-                        "If checked, this application can use passthrough functionality. This option must be enabled at build time, otherwise initializing passthrough and creating passthrough layers in application scenes will fail."),
-                    ref projectConfig.insightPassthroughEnabled, ref hasModified);
+                // Passthrough support
+                OVREditorUtil.SetupEnumField(projectConfig, new GUIContent("Passthrough Support",
+                    "Allows the application to use passthrough functionality. This option must be enabled at build time, otherwise initializing passthrough and creating passthrough layers in application scenes will fail."),
+                    ref projectConfig._insightPassthroughSupport, ref hasModified);
 
                 break;
 

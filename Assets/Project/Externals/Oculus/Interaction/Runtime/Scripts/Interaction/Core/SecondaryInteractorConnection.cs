@@ -43,8 +43,8 @@ namespace Oculus.Interaction
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(PrimaryInteractor);
-            Assert.IsNotNull(SecondaryInteractor);
+            this.AssertField(PrimaryInteractor, nameof(PrimaryInteractor));
+            this.AssertField(SecondaryInteractor, nameof(SecondaryInteractor));
         }
 
         #region Inject

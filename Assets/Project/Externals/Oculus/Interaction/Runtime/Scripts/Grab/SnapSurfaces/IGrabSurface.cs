@@ -36,7 +36,7 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
         /// <param name="reference">The reference  point to use for measuring at the surface.</param>
         /// <param name="bestPose">The best found pose at the surface.<</param>
         /// <returns>The score indicating how good the found pose was, -1 for invalid result.</returns>
-        float CalculateBestPoseAtSurface(in Pose targetPose, in Pose reference, out Pose bestPose, in PoseMeasureParameters scoringModifier);
+        GrabPoseScore CalculateBestPoseAtSurface(in Pose targetPose, in Pose reference, out Pose bestPose, in PoseMeasureParameters scoringModifier);
 
         /// <summary>
         /// Finds the Pose at the surface that is the closest to the given ray.

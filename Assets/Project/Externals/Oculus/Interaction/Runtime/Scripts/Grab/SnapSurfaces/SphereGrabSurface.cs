@@ -157,9 +157,9 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_relativeTo, "The grab surface needs a RelativeTo transform");
-            Assert.IsNotNull(_referencePoint, "The SphereSurface needs a Reference Point");
-            Assert.IsNotNull(_data, "Missing data for the SphereSurface");
+            this.AssertField(_relativeTo, nameof(_relativeTo));
+            this.AssertField(_referencePoint, nameof(_referencePoint));
+            this.AssertField(_data, nameof(_data));
         }
 
         public Pose MirrorPose(in Pose pose)
@@ -187,7 +187,7 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
             return true;
         }
 
-        public float CalculateBestPoseAtSurface(in Pose targetPose, in Pose reference, out Pose bestPose, in PoseMeasureParameters scoringModifier)
+        public GrabPoseScore CalculateBestPoseAtSurface(in Pose targetPose, in Pose reference, out Pose bestPose, in PoseMeasureParameters scoringModifier)
         {
             return GrabPoseHelper.CalculateBestPoseAtSurface(targetPose, reference, out bestPose,
                 scoringModifier, MinimalTranslationPoseAtSurface, MinimalRotationPoseAtSurface);

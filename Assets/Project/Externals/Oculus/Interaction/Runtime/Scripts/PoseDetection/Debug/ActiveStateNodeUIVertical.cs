@@ -65,10 +65,10 @@ namespace Oculus.Interaction.PoseDetection.Debug
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_childArea);
-            Assert.IsNotNull(_connectingLine);
-            Assert.IsNotNull(_activeImage);
-            Assert.IsNotNull(_label);
+            this.AssertField(_childArea, nameof(_childArea));
+            this.AssertField(_connectingLine, nameof(_connectingLine));
+            this.AssertField(_activeImage, nameof(_activeImage));
+            this.AssertField(_label, nameof(_label));
         }
 
         protected virtual void Update()

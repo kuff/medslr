@@ -18,9 +18,7 @@
  * limitations under the License.
  */
 
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Oculus.Interaction.DistanceReticles
 {
@@ -44,7 +42,7 @@ namespace Oculus.Interaction.DistanceReticles
             }
         }
 
-        private List<Vector3> _linePoints;
+        private Vector3[] _linePoints;
 
         [SerializeField]
         private bool _visibleDuringNormal;
@@ -70,8 +68,8 @@ namespace Oculus.Interaction.DistanceReticles
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(DistanceInteractor);
-            _linePoints = new List<Vector3>(new Vector3[NumLinePoints]);
+            this.AssertField(DistanceInteractor, nameof(DistanceInteractor));
+            _linePoints = new Vector3[NumLinePoints];
             this.EndStart(ref _started);
         }
 
@@ -136,7 +134,7 @@ namespace Oculus.Interaction.DistanceReticles
             }
         }
 
-        protected virtual void InteractableSet(IDistanceInteractable interactable)
+        protected virtual void InteractableSet(IRelativeToRef interactable)
         {
             Component component = interactable as Component;
             if (component == null)
@@ -175,7 +173,7 @@ namespace Oculus.Interaction.DistanceReticles
             RenderLine(_linePoints);
         }
 
-        protected abstract void RenderLine(List<Vector3> linePoints);
+        protected abstract void RenderLine(Vector3[] linePoints);
 
         protected Vector3 TargetHit(Vector3 hitPoint)
         {

@@ -28,7 +28,7 @@ namespace Meta.Conduit
         public string Name
         {
             get => name;
-            set => name = ConduitUtilities.DelimitWithUnderscores(value).ToLower();
+            set => name = ConduitUtilities.DelimitWithUnderscores(value);
         }
         private string name;
 
@@ -52,7 +52,7 @@ namespace Meta.Conduit
                 var lastPeriod = QualifiedTypeName.LastIndexOf('.');
                 if (lastPeriod < 0)
                 {
-                    return string.Empty;
+                    return QualifiedTypeName;
                 }
                 var entityName = QualifiedTypeName.Substring(lastPeriod + 1);
 
@@ -82,6 +82,11 @@ namespace Meta.Conduit
         /// Additional names by which the backend can refer to this parameter.
         /// </summary>
         public List<string> Aliases { get; set; }
+        
+        /// <summary>
+        /// Example values this parameter can accept.
+        /// </summary>
+        public List<string> Examples { get; set; }
 
         public override bool Equals(object obj)
         {

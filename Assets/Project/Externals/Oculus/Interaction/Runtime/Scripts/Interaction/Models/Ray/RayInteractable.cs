@@ -66,10 +66,10 @@ namespace Oculus.Interaction
         protected override void Start()
         {
             this.BeginStart(ref _started, () => base.Start());
-            Assert.IsNotNull(Surface);
+            this.AssertField(Surface, nameof(Surface));
             if (_selectSurface != null)
             {
-                Assert.IsNotNull(SelectSurface);
+                this.AssertField(SelectSurface, nameof(SelectSurface));
             }
             else
             {

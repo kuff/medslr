@@ -9,15 +9,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Facebook.WitAi.CallbackHandlers;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Data;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.CallbackHandlers;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Data;
+using Meta.WitAi.Json;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public class WitUnderstandingViewer : WitConfigurationWindow
     {
@@ -198,6 +198,11 @@ namespace Facebook.WitAi.Windows
                 {
                     SetVoiceService(newService);
                 }
+                // Select
+                if (_currentService >= 0 && _currentService < _services.Length && WitEditorUI.LayoutTextButton(WitTexts.Texts.UnderstandingViewerSelectLabel))
+                {
+                    Selection.activeObject = _services[_currentService];
+                }
                 // Refresh
                 if (WitEditorUI.LayoutTextButton(WitTexts.Texts.ConfigurationRefreshButtonLabel))
                 {
@@ -219,7 +224,7 @@ namespace Facebook.WitAi.Windows
                     return;
                 }
                 // Check client access token
-                string clientAccessToken = witConfiguration.clientAccessToken;
+                string clientAccessToken = witConfiguration.GetClientAccessToken();
                 if (string.IsNullOrEmpty(clientAccessToken))
                 {
                     WitEditorUI.LayoutErrorLabel(WitTexts.Texts.UnderstandingViewerMissingClientTokenLabel);
@@ -337,7 +342,7 @@ namespace Facebook.WitAi.Windows
                 _status = WitTexts.Texts.UnderstandingViewerLoadingLabel;
                 _responseText = _status;
                 _submitStart = System.DateTime.Now;
-                _request = witConfiguration.MessageRequest(_utterance, new WitRequestOptions());
+                _request = witConfiguration.CreateMessageRequest(_utterance, new WitRequestOptions());
                 _request.onResponse += (r) => OnResponse(r?.ResponseData);
                 _request.Request();
             }

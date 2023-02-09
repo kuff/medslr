@@ -1,9 +1,9 @@
 using System;
 using System.Text;
-using Facebook.WitAi.Events;
+using Meta.WitAi.Events;
 using UnityEngine;
 
-namespace Facebook.WitAi.Dictation
+namespace Meta.WitAi.Dictation
 {
     public class MultiRequestTranscription : MonoBehaviour
     {

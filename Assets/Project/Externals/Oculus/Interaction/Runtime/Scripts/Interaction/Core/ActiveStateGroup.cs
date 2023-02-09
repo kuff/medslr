@@ -33,10 +33,12 @@ namespace Oculus.Interaction
             XOR = 2
         }
 
+        [Tooltip("The logic operator will be applied to these IActiveStates.")]
         [SerializeField, Interface(typeof(IActiveState))]
         private List<MonoBehaviour> _activeStates;
         private List<IActiveState> ActiveStates;
 
+        [Tooltip("IActiveStates will have this boolean logic operator applied.")]
         [SerializeField]
         private ActiveStateGroupLogicOperator _logicOperator = ActiveStateGroupLogicOperator.AND;
 
@@ -47,10 +49,7 @@ namespace Oculus.Interaction
 
         protected virtual void Start()
         {
-            foreach (IActiveState activeState in ActiveStates)
-            {
-                Assert.IsNotNull(activeState);
-            }
+            this.AssertCollectionItems(ActiveStates, nameof(ActiveStates));
         }
 
         public bool Active

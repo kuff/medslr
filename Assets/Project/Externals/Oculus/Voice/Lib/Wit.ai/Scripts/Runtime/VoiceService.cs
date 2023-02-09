@@ -9,17 +9,18 @@
 using System;
 using System.Collections.Generic;
 using Meta.Conduit;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Data;
-using Facebook.WitAi.Data.Configuration;
-using Facebook.WitAi.Data.Intents;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Events.UnityEventListeners;
-using Facebook.WitAi.Interfaces;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Data;
+using Meta.WitAi.Data.Configuration;
+using Meta.WitAi.Data.Intents;
+using Meta.WitAi.Events;
+using Meta.WitAi.Events.UnityEventListeners;
+using Meta.WitAi.Interfaces;
+using Meta.WitAi.Json;
 using UnityEngine;
+using Meta.WitAi;
 
-namespace Facebook.WitAi
+namespace Meta.WitAi
 {
     public abstract class VoiceService : MonoBehaviour, IVoiceService, IInstanceResolver, IAudioEventProvider
     {
@@ -151,7 +152,7 @@ namespace Facebook.WitAi
         protected virtual void Awake()
         {
             var witConfigProvider = this.GetComponent<IWitRuntimeConfigProvider>();
-            _witConfiguration = witConfigProvider.RuntimeConfiguration.witConfiguration;
+            _witConfiguration = witConfigProvider?.RuntimeConfiguration?.witConfiguration;
 
             InitializeEventListeners();
 
@@ -180,7 +181,7 @@ namespace Facebook.WitAi
         {
             if (UseConduit)
             {
-                ConduitDispatcher.Initialize(_witConfiguration.manifestLocalPath);
+                ConduitDispatcher.Initialize(_witConfiguration.ManifestLocalPath);
             }
             VoiceEvents.OnPartialResponse.AddListener(ValidateShortResponse);
             VoiceEvents.OnResponse.AddListener(HandleResponse);
@@ -192,15 +193,22 @@ namespace Facebook.WitAi
             VoiceEvents.OnResponse.RemoveListener(HandleResponse);
         }
 
+        private VoiceSession GetVoiceSession(WitResponseNode response)
+        {
+            return new VoiceSession
+            {
+                service = this,
+                response = response,
+                validResponse = false
+            };
+        }
+
         protected virtual void ValidateShortResponse(WitResponseNode response)
         {
             if (VoiceEvents.OnValidatePartialResponse != null)
             {
                 // Create short response data
-                VoiceSession validationData = new VoiceSession();
-                validationData.service = this;
-                validationData.response = response;
-                validationData.validResponse = false;
+                VoiceSession validationData = GetVoiceSession(response);
 
                 // Call short response
                 VoiceEvents.OnValidatePartialResponse.Invoke(validationData);
@@ -290,7 +298,7 @@ namespace Facebook.WitAi
                     }
                     if (parameters[0].ParameterType != typeof(WitResponseNode) || parameters.Length > 2)
                     {
-                        Debug.LogError("Match intent only supports methods with no parameters or with a WitResponseNode parameter. Enable Conduit or adjust the parameters");
+                        VLog.E("Match intent only supports methods with no parameters or with a WitResponseNode parameter. Enable Conduit or adjust the parameters");
                         continue;
                     }
                     if (parameters.Length == 1)

@@ -20,9 +20,8 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using UnityEngine.Assertions;
-using Oculus.Interaction;
+using Random = UnityEngine.Random;
 
 namespace Oculus.Interaction
 {

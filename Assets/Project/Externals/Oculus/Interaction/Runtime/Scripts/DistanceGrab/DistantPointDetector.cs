@@ -20,7 +20,7 @@
 
 using UnityEngine;
 
-namespace Oculus.Interaction.HandGrab
+namespace Oculus.Interaction
 {
     [System.Serializable]
     public struct DistantPointDetectorFrustums
@@ -116,13 +116,14 @@ namespace Oculus.Interaction.HandGrab
             return anyHit;
         }
 
-        public bool IsPointingWithoutAid(Collider[] colliders)
+        public bool IsPointingWithoutAid(Collider[] colliders, out Vector3 bestHitPoint)
         {
             if (_frustums.AidFrustum == null)
             {
+                bestHitPoint = Vector3.zero;
                 return false;
             }
-            return !IsPointingAtColliders(colliders, _frustums.AidFrustum)
+            return !IsPointingAtColliders(colliders, _frustums.AidFrustum, out bestHitPoint)
                 && IsWithinDeselectionRange(colliders);
         }
 
@@ -147,6 +148,31 @@ namespace Oculus.Interaction.HandGrab
                 }
             }
             return false;
+        }
+
+        private bool IsPointingAtColliders(Collider[] colliders, ConicalFrustum frustum,
+            out Vector3 bestHitPoint)
+        {
+            bestHitPoint = Vector3.zero;
+            float bestScore = float.NegativeInfinity;
+            bool isPointing = false;
+            if (frustum == null)
+            {
+                return false;
+            }
+            foreach (Collider collider in colliders)
+            {
+                if (frustum.HitsCollider(collider, out float score, out Vector3 point))
+                {
+                    isPointing = true;
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestHitPoint = point;
+                    }
+                }
+            }
+            return isPointing;
         }
     }
 }

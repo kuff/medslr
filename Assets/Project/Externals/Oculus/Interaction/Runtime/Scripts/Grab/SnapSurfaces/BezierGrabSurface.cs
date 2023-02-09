@@ -49,19 +49,18 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_relativeTo, "A grab surface needs a RelativeTo transform");
-            Assert.IsTrue(ControlPoints != null && ControlPoints.Count > 0,
-                "A BezierSurface needs at least one control point");
+            this.AssertField(_relativeTo, nameof(_relativeTo));
+            this.AssertCollectionField(ControlPoints, nameof(ControlPoints));
         }
 
-        public float CalculateBestPoseAtSurface(in Pose targetPose, in Pose reference, out Pose bestPose,
+        public GrabPoseScore CalculateBestPoseAtSurface(in Pose targetPose, in Pose reference, out Pose bestPose,
             in PoseMeasureParameters scoringModifier)
         {
             Pose relativePose = _relativeTo.GetPose();
             Pose testPose = Pose.identity;
             Pose smallestRotationPose = Pose.identity;
             bestPose = targetPose;
-            float bestScore = float.NegativeInfinity;
+            GrabPoseScore bestScore = GrabPoseScore.Max;
             for (int i = 0; i < _controlPoints.Count; i++)
             {
                 BezierControlPoint currentControlPoint = _controlPoints[i];
@@ -73,13 +72,13 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
                     continue;
                 }
 
-                float score;
+                GrabPoseScore score;
                 if ((currentControlPoint.disconnected && nextControlPoint.disconnected)
                     || _controlPoints.Count == 1)
                 {
                     Pose worldPose = currentControlPoint.WorldSpacePose(relativePose);
                     testPose.CopyFrom(worldPose);
-                    score = GrabPoseHelper.Similarity(targetPose, testPose, scoringModifier);
+                    score = new GrabPoseScore(targetPose, testPose, scoringModifier.PositionRotationWeight);
                 }
                 else
                 {
@@ -108,7 +107,7 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
                         });
                 }
 
-                if (score > bestScore)
+                if (score.IsBetterThan(bestScore))
                 {
                     bestScore = score;
                     bestPose.CopyFrom(testPose);
@@ -123,7 +122,8 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
             Pose testPose = Pose.identity;
             Pose targetPose = Pose.identity;
             bestPose = reference;
-            float bestScore = float.NegativeInfinity;
+            bool poseFound = false;
+            GrabPoseScore bestScore = GrabPoseScore.Max;
             for (int i = 0; i < _controlPoints.Count; i++)
             {
                 BezierControlPoint currentControlPoint = _controlPoints[i];
@@ -163,14 +163,15 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
                     testPose.rotation = Quaternion.Slerp(start.rotation, end.rotation, t);
                 }
 
-                float score = GrabPoseHelper.PositionalSimilarity(targetPose.position, testPose.position, MAX_RAY_DISTANCE);
-                if (score > bestScore)
+                GrabPoseScore score =  new GrabPoseScore(targetPose.position, testPose.position);
+                if (score.IsBetterThan(bestScore))
                 {
                     bestScore = score;
                     bestPose.CopyFrom(testPose);
+                    poseFound = true;
                 }
             }
-            return bestScore != float.NegativeInfinity;
+            return poseFound;
         }
 
         private Plane GenerateRaycastPlane(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 fallbackDir)

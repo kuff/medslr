@@ -20,7 +20,6 @@
 
 using Oculus.Interaction.HandGrab;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Oculus.Interaction
 {
@@ -31,7 +30,7 @@ namespace Oculus.Interaction
     /// moving it with deltas in its own place or allowing a pull motion, etc.
     /// </summary>
     public class DistanceGrabInteractable : PointerInteractable<DistanceGrabInteractor, DistanceGrabInteractable>,
-        IRigidbodyRef, IDistanceInteractable
+        IRigidbodyRef, IRelativeToRef, ICollidersRef
     {
         private Collider[] _colliders;
         public Collider[] Colliders => _colliders;
@@ -94,7 +93,7 @@ namespace Oculus.Interaction
         protected override void Start()
         {
             this.BeginStart(ref _started, () => base.Start());
-            Assert.IsNotNull(Rigidbody);
+            this.AssertField(Rigidbody, nameof(Rigidbody));
             _colliders = Rigidbody.GetComponentsInChildren<Collider>();
             if (MovementProvider == null)
             {

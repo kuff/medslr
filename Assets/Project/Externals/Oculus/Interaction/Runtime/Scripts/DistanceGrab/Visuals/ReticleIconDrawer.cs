@@ -87,8 +87,8 @@ namespace Oculus.Interaction.DistanceReticles
         protected override void Start()
         {
             this.BeginStart(ref _started, () => base.Start());
-            Assert.IsNotNull(_renderer);
-            Assert.IsNotNull(_centerEye);
+            this.AssertField(_renderer, nameof(_renderer));
+            this.AssertField(_centerEye, nameof(_centerEye));
             _originalScale = this.transform.localScale;
             this.EndStart(ref _started);
         }

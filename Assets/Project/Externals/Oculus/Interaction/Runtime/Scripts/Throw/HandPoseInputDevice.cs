@@ -172,7 +172,7 @@ namespace Oculus.Interaction.Throw
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_hand);
+            this.AssertField(Hand, nameof(Hand));
             _bufferSize = Mathf.CeilToInt(_bufferLengthSeconds
                 * _sampleFrequency);
         }

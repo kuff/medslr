@@ -22,7 +22,6 @@ using Oculus.Interaction.Input;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 
 namespace Oculus.Interaction.PoseDetection
 {
@@ -32,10 +31,14 @@ namespace Oculus.Interaction.PoseDetection
         private MonoBehaviour _hand;
         public IHand Hand { get; private set; }
 
+        [SerializeField, Interface(typeof(IFingerFeatureStateProvider))]
+        private MonoBehaviour _fingerFeatureStateProvider;
+
+        protected IFingerFeatureStateProvider FingerFeatureStateProvider;
+
         [SerializeField]
         private ShapeRecognizer[] _shapes;
         public IReadOnlyList<ShapeRecognizer> Shapes => _shapes;
-        private IFingerFeatureStateProvider FingerFeatureStateProvider { get; set; }
         public Handedness Handedness => Hand.Handedness;
 
         struct FingerFeatureStateUsage
@@ -49,25 +52,14 @@ namespace Oculus.Interaction.PoseDetection
         protected virtual void Awake()
         {
             Hand = _hand as IHand;
+            FingerFeatureStateProvider = _fingerFeatureStateProvider as IFingerFeatureStateProvider;
         }
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(Hand);
-            Assert.IsNotNull(_shapes);
-
-            for (var index = 0; index < _shapes.Length; index++)
-            {
-                var sr = _shapes[index];
-                if (sr == null)
-                {
-                    Assert.IsNotNull(sr, "_shapes[" + index + "] != null");
-                }
-            }
-
-            bool foundAspect = Hand.TryGetAspect(out IFingerFeatureStateProvider state);
-            Assert.IsTrue(foundAspect);
-            FingerFeatureStateProvider = state;
+            this.AssertField(Hand, nameof(Hand));
+            this.AssertField(FingerFeatureStateProvider, nameof(FingerFeatureStateProvider));
+            this.AssertCollectionField(_shapes, nameof(_shapes));
 
             _allFingerStates = FlattenUsedFeatures();
 
@@ -133,9 +125,12 @@ namespace Oculus.Interaction.PoseDetection
         }
 
         #region Inject
-        public void InjectAllShapeRecognizerActiveState(IHand hand, ShapeRecognizer[] shapes)
+        public void InjectAllShapeRecognizerActiveState(IHand hand,
+            IFingerFeatureStateProvider fingerFeatureStateProvider,
+            ShapeRecognizer[] shapes)
         {
             InjectHand(hand);
+            InjectFingerFeatureStateProvider(fingerFeatureStateProvider);
             InjectShapes(shapes);
         }
 
@@ -143,6 +138,12 @@ namespace Oculus.Interaction.PoseDetection
         {
             _hand = hand as MonoBehaviour;
             Hand = hand;
+        }
+
+        public void InjectFingerFeatureStateProvider(IFingerFeatureStateProvider fingerFeatureStateProvider)
+        {
+            _fingerFeatureStateProvider = fingerFeatureStateProvider as MonoBehaviour;
+            FingerFeatureStateProvider = fingerFeatureStateProvider;
         }
 
         public void InjectShapes(ShapeRecognizer[] shapes)

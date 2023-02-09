@@ -6,15 +6,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Data.Configuration;
-using Facebook.WitAi.Dictation.Data;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Interfaces;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Data.Configuration;
+using Meta.WitAi.Events;
+using Meta.WitAi.Interfaces;
+using Meta.WitAi.Json;
 using UnityEngine;
 
-namespace Facebook.WitAi.Dictation
+namespace Meta.WitAi.Dictation
 {
     public class WitDictation : DictationService, IWitRuntimeConfigProvider, IVoiceEventProvider, IWitRequestProvider
     {
@@ -57,7 +56,7 @@ namespace Facebook.WitAi.Dictation
         public WitRequest CreateWitRequest(WitConfiguration config, WitRequestOptions requestOptions,
             IDynamicEntitiesProvider[] additionalEntityProviders = null)
         {
-            return config.DictationRequest(requestOptions);
+            return config.CreateDictationRequest(requestOptions);
         }
 
         #endregion

@@ -19,9 +19,7 @@
  */
 
 using UnityEngine;
-using UnityEngine.Assertions;
 using Oculus.Interaction.Input;
-using UnityEngine.Serialization;
 
 namespace Oculus.Interaction
 {
@@ -54,9 +52,9 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(Hand);
-            Assert.IsNotNull(_pokeInteractor);
-            Assert.IsNotNull(_syntheticHand);
+            this.AssertField(Hand, nameof(Hand));
+            this.AssertField(_pokeInteractor, nameof(_pokeInteractor));
+            this.AssertField(_syntheticHand, nameof(_syntheticHand));
             this.EndStart(ref _started);
         }
 
@@ -64,8 +62,7 @@ namespace Oculus.Interaction
         {
             if (_started)
             {
-                _pokeInteractor.WhenInteractableSelected.Action += HandleLock;
-                _pokeInteractor.WhenInteractableUnselected.Action += HandleUnlock;
+                _pokeInteractor.WhenStateChanged += HandleStateChanged;
             }
         }
 
@@ -75,11 +72,22 @@ namespace Oculus.Interaction
             {
                 if (_isTouching)
                 {
-                    HandleUnlock(_pokeInteractor.SelectedInteractable);
+                    UnlockWrist();
                 }
 
-                _pokeInteractor.WhenInteractableSelected.Action -= HandleLock;
-                _pokeInteractor.WhenInteractableUnselected.Action -= HandleUnlock;
+                _pokeInteractor.WhenStateChanged -= HandleStateChanged;
+            }
+        }
+
+        private void HandleStateChanged(InteractorStateChangeArgs args)
+        {
+            if (_pokeInteractor.IsPassedSurface)
+            {
+                LockWrist();
+            }
+            else
+            {
+                UnlockWrist();
             }
         }
 
@@ -88,12 +96,12 @@ namespace Oculus.Interaction
             UpdateWrist();
         }
 
-        private void HandleLock(PokeInteractable pokeInteractable)
+        private void LockWrist()
         {
             _isTouching = true;
         }
 
-        private void HandleUnlock(PokeInteractable pokeInteractable)
+        private void UnlockWrist()
         {
             _syntheticHand.FreeWrist();
             _isTouching = false;

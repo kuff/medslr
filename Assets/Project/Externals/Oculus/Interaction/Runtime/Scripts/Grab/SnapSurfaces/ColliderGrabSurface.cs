@@ -30,7 +30,7 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_collider, "The ColliderSurface needs a collider");
+            this.AssertField(_collider, nameof(_collider));
         }
 
         private Vector3 NearestPointInSurface(Vector3 targetPosition)
@@ -42,18 +42,11 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
             return _collider.ClosestPoint(targetPosition);
         }
 
-        public float CalculateBestPoseAtSurface(in Pose targetPose, in Pose referencePose, out Pose bestPose, in PoseMeasureParameters scoringModifier)
+        public GrabPoseScore CalculateBestPoseAtSurface(in Pose targetPose, in Pose referencePose, out Pose bestPose, in PoseMeasureParameters scoringModifier)
         {
             Vector3 surfacePoint = NearestPointInSurface(targetPose.position);
-
-            float bestScore = 1f;
-            if (scoringModifier.MaxDistance > 0)
-            {
-                bestScore = GrabPoseHelper.PositionalSimilarity(surfacePoint, targetPose.position, scoringModifier.MaxDistance);
-            }
-
             bestPose = new Pose(surfacePoint, targetPose.rotation);
-            return bestScore;
+            return new GrabPoseScore(surfacePoint, targetPose.position);
         }
 
         public bool CalculateBestPoseAtSurface(Ray targetRay, in Pose recordedPose, out Pose bestPose)

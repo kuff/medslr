@@ -172,9 +172,9 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_relativeTo, "The grab surface needs a RelativeTo transform");
-            Assert.IsNotNull(_referencePoint, "The BoxSurface needs a Reference Point");
-            Assert.IsNotNull(_data, "Missing data for the BoxSurface");
+            this.AssertField(_relativeTo, nameof(_relativeTo));
+            this.AssertField(_referencePoint, nameof(_referencePoint));
+            this.AssertField(_data, nameof(_data));
         }
 
         public Pose MirrorPose(in Pose pose)
@@ -198,7 +198,7 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
             return surface;
         }
 
-        public float CalculateBestPoseAtSurface(in Pose targetPose, in Pose reference, out Pose bestPose, in PoseMeasureParameters scoringModifier)
+        public GrabPoseScore CalculateBestPoseAtSurface(in Pose targetPose, in Pose reference, out Pose bestPose, in PoseMeasureParameters scoringModifier)
         {
             return GrabPoseHelper.CalculateBestPoseAtSurface(targetPose, reference, out bestPose,
                 scoringModifier, MinimalTranslationPoseAtSurface, MinimalRotationPoseAtSurface);
@@ -263,10 +263,10 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
             Vector3 leftP = ProjectOnSegment(targetPosition, (bottomLeft - forwardDir * SnapOffset.z, topLeft - forwardDir * SnapOffset.w));
             Vector3 rightP = ProjectOnSegment(targetPosition, (bottomRight + forwardDir * SnapOffset.w, topRight + forwardDir * SnapOffset.z));
 
-            float bottomDistance = Vector3.Distance(bottomP, targetPosition);
-            float topDistance = Vector3.Distance(topP, targetPosition);
-            float leftDistance = Vector3.Distance(leftP, targetPosition);
-            float rightDistance = Vector3.Distance(rightP, targetPosition);
+            float bottomDistance = (bottomP - targetPosition).sqrMagnitude;
+            float topDistance = (topP - targetPosition).sqrMagnitude;
+            float leftDistance = (leftP - targetPosition).sqrMagnitude;
+            float rightDistance = (rightP - targetPosition).sqrMagnitude;
 
             float minDistance = Mathf.Min(bottomDistance, Mathf.Min(topDistance, Mathf.Min(leftDistance, rightDistance)));
             if (bottomDistance == minDistance)
@@ -303,10 +303,10 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
             Quaternion leftRot = Quaternion.AngleAxis(90f, up) * baseRot;
             Quaternion rightRot = Quaternion.AngleAxis(-90f, up) * baseRot;
 
-            float bottomDot = GrabPoseHelper.RotationalSimilarity(bottomRot, desiredRot);
-            float topDot = GrabPoseHelper.RotationalSimilarity(topRot, desiredRot);
-            float leftDot = GrabPoseHelper.RotationalSimilarity(leftRot, desiredRot);
-            float rightDot = GrabPoseHelper.RotationalSimilarity(rightRot, desiredRot);
+            float bottomDot = RotationalScore(bottomRot, desiredRot);
+            float topDot = RotationalScore(topRot, desiredRot);
+            float leftDot = RotationalScore(leftRot, desiredRot);
+            float rightDot = RotationalScore(rightRot, desiredRot);
 
             Vector3 rightDir = Rotation * Vector3.right;
             Vector3 forwardDir = Rotation * Vector3.forward;
@@ -348,6 +348,13 @@ namespace Oculus.Interaction.Grab.GrabSurfaces
         {
             Quaternion offset = Quaternion.AngleAxis(angle, Rotation * Vector3.up);
             return offset * baseRot;
+        }
+
+        private static float RotationalScore(in Quaternion from, in Quaternion to)
+        {
+            float forwardDifference = Vector3.Dot(from * Vector3.forward, to * Vector3.forward) * 0.5f + 0.5f;
+            float upDifference = Vector3.Dot(from * Vector3.up, to * Vector3.up) * 0.5f + 0.5f;
+            return (forwardDifference * upDifference);
         }
 
         #region Inject

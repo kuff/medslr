@@ -11,7 +11,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEditor;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     // Edit Type
     public enum WitPropertyEditType
@@ -104,6 +104,13 @@ namespace Facebook.WitAi.Windows
         // Draw a specific property
         protected virtual void LayoutField(int index, SerializedProperty property, FieldInfo subfield, WitPropertyEditType editType)
         {
+            // Get property if possible
+            SerializedProperty subfieldProperty = property.FindPropertyRelative(subfield.Name);
+            if (subfieldProperty == null)
+            {
+                return;
+            }
+
             // Begin layout
             GUILayout.BeginHorizontal();
 
@@ -117,7 +124,6 @@ namespace Facebook.WitAi.Windows
             GUI.enabled = canEdit;
 
             // Cannot edit, just show field
-            SerializedProperty subfieldProperty = property.FindPropertyRelative(subfield.Name);
             if (!canEdit && subfieldProperty.type == "string")
             {
                 // Get value text
@@ -214,7 +220,7 @@ namespace Facebook.WitAi.Windows
         public const string LocalizedMissingKey = "missing";
         protected virtual string GetLocalizedText(SerializedProperty property, string key)
         {
-            return property.displayName;
+            return string.IsNullOrEmpty(key) || string.Equals(LocalizedTitleKey, key) ? property.displayName : key[0].ToString().ToUpper() + key.Substring(1);
         }
         // Way to ignore certain properties
         protected virtual bool ShouldLayoutField(SerializedProperty property, FieldInfo subfield)

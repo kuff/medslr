@@ -7,11 +7,11 @@
  */
 
 using System;
-using Facebook.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Data;
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.TTS.Editor
+namespace Meta.WitAi.TTS.Editor
 {
     [CustomEditor(typeof(TTSService), true)]
     public class TTSServiceInspector : UnityEditor.Editor
@@ -22,9 +22,6 @@ namespace Facebook.WitAi.TTS.Editor
         private bool _clipFoldout = false;
         // Maximum text for abbreviated
         private const int MAX_DISPLAY_TEXT = 20;
-
-        // Custom GUI when needed
-        public static event Action<TTSService> onAdditionalGUI;
 
         // GUI
         public override void OnInspectorGUI()
@@ -37,8 +34,6 @@ namespace Facebook.WitAi.TTS.Editor
             {
                 _service = target as TTSService;
             }
-            // Add additional gui
-            onAdditionalGUI?.Invoke(_service);
 
             // Ignore if in editor
             if (!Application.isPlaying)

@@ -48,7 +48,7 @@ namespace Oculus.Interaction.Utils
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_sourceTransform);
+            this.AssertField(_sourceTransform, nameof(_sourceTransform));
             _positionFilter = OneEuroFilter.CreateVector3();
             _rotationFilter = OneEuroFilter.CreateQuaternion();
         }

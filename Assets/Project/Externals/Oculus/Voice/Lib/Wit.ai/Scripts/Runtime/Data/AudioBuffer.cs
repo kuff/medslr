@@ -8,12 +8,12 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Interfaces;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Events;
+using Meta.WitAi.Interfaces;
+using Meta.WitAi.Lib;
 using UnityEngine;
 
-namespace Facebook.WitAi.Data
+namespace Meta.WitAi.Data
 {
     public class AudioBuffer : MonoBehaviour
     {
@@ -101,6 +101,8 @@ namespace Facebook.WitAi.Data
             _micInput.OnSampleReady -= OnMicSampleReady;
 
             if (alwaysRecording) StopRecording(this);
+
+            _instanceInit = false;
         }
 
         // Callback for mic sample ready
@@ -172,6 +174,7 @@ namespace Facebook.WitAi.Data
         private IEnumerator WaitForMicToStart(Component component)
         {
             yield return new WaitUntil(() => null != _micInput);
+            yield return new WaitUntil(() => _micInput.IsInputAvailable);
 
             _activeRecorders.Add(component);
             if (!_micInput.IsRecording)

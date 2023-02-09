@@ -62,7 +62,7 @@ namespace Oculus.Interaction.Throw
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_controller);
+            this.AssertField(Controller, nameof(Controller));
         }
 
         public (Vector3, Vector3) GetExternalVelocities()

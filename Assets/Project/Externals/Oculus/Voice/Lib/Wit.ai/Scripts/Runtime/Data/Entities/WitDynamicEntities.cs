@@ -9,11 +9,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Facebook.WitAi.Interfaces;
-using Facebook.WitAi.Lib;
+using Meta.WitAi.Interfaces;
+using Meta.WitAi.Json;
+using Meta.WitAi.Data.Info;
 using UnityEngine;
 
-namespace Facebook.WitAi.Data.Entities
+namespace Meta.WitAi.Data.Entities
 {
     [Serializable]
     public class WitDynamicEntities : IDynamicEntitiesProvider, IEnumerable<WitDynamicEntity>
@@ -91,7 +92,7 @@ namespace Facebook.WitAi.Data.Entities
             entities.Remove(dynamicEntity);
         }
 
-        public void AddKeyword(string entityName, WitEntityKeyword keyword)
+        public void AddKeyword(string entityName, WitEntityKeywordInfo keyword)
         {
             var entity = entities.Find(e => entityName == e.entity);
             if (null == entity)
@@ -102,7 +103,7 @@ namespace Facebook.WitAi.Data.Entities
             entity.keywords.Add(keyword);
         }
 
-        public void RemoveKeyword(string entityName, WitEntityKeyword keyword)
+        public void RemoveKeyword(string entityName, WitEntityKeywordInfo keyword)
         {
             int index = entities.FindIndex(e => e.entity == entityName);
             if (index >= 0)

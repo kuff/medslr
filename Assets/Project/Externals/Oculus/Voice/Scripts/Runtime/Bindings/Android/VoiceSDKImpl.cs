@@ -19,10 +19,10 @@
  */
 
 using System;
-using Facebook.WitAi;
-using Facebook.WitAi.Configuration;
-using Facebook.WitAi.Events;
-using Facebook.WitAi.Interfaces;
+using Meta.WitAi;
+using Meta.WitAi.Configuration;
+using Meta.WitAi.Events;
+using Meta.WitAi.Interfaces;
 using Oculus.Voice.Core.Bindings.Android;
 using Oculus.Voice.Interfaces;
 using Debug = UnityEngine.Debug;

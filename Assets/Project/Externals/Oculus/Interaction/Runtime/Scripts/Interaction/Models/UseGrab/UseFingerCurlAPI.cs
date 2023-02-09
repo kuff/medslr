@@ -36,7 +36,7 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(Hand, "Hand not assigned");
+            this.AssertField(Hand, nameof(Hand));
             this.EndStart(ref _started);
         }
         public float GetFingerUseStrength(HandFinger finger)

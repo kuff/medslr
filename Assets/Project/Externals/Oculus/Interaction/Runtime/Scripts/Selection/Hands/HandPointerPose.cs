@@ -45,7 +45,7 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(Hand);
+            this.AssertField(Hand, nameof(Hand));
             this.EndStart(ref _started);
         }
 

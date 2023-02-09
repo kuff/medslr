@@ -80,7 +80,7 @@ namespace Oculus.Interaction.Input
             if (_updateAfter != null)
             {
                 UpdateAfter = _updateAfter as IDataSource;
-                Assert.IsNotNull(UpdateAfter);
+                this.AssertField(UpdateAfter, nameof(UpdateAfter));
             }
             Started = true;
             this.EndStart(ref _started);

@@ -317,6 +317,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _activeState: {fileID: 0}
   _interactableFilters: []
+  _maxIterationsPerFrame: 1
+  _data: {fileID: 0}
   _selector: {fileID: 2589682475924332496}
   _rigidbody: {fileID: 3577656904122370513}
   _grabCenter: {fileID: 6931372971830974944}

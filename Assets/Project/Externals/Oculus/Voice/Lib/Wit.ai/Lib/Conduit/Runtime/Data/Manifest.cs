@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
+using Meta.WitAi;
 
 namespace Meta.Conduit
 {
@@ -70,7 +70,7 @@ namespace Meta.Conduit
                 var lastPeriod = action.ID.LastIndexOf('.');
                 if (lastPeriod <= 0)
                 {
-                    Debug.LogError($"Invalid Action ID: {action.ID}");
+                    VLog.E($"Invalid Action ID: {action.ID}");
                     resolvedAll = false;
                     continue;
                 }
@@ -82,7 +82,7 @@ namespace Meta.Conduit
                 var targetType = Type.GetType(qualifiedTypeName);
                 if (targetType == null)
                 {
-                    Debug.LogError($"Failed to resolve type: {qualifiedTypeName}");
+                    VLog.E($"Failed to resolve type: {qualifiedTypeName}");
                     resolvedAll = false;
                     continue;
                 }
@@ -93,14 +93,16 @@ namespace Meta.Conduit
                     var manifestParameter = action.Parameters[i];
                     var fullTypeName = $"{manifestParameter.QualifiedTypeName},{manifestParameter.TypeAssembly}";
                     types[i] = Type.GetType(fullTypeName);
+                    if (types[i] == null)
+                    {
+                        VLog.E($"Failed to resolve type: {fullTypeName}");
+                    }
                 }
 
-                var targetMethod = targetType.GetMethod(method,
-                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, CallingConventions.Any,
-                    types, null);
+                var targetMethod = GetBestMethodMatch(targetType, method, types);
                 if (targetMethod == null)
                 {
-                    Debug.LogError($"Failed to resolve method {method}.");
+                    VLog.E($"Failed to resolve method {typeName}.{method}.");
                     resolvedAll = false;
                     continue;
                 }
@@ -108,7 +110,7 @@ namespace Meta.Conduit
                 var attributes = targetMethod.GetCustomAttributes(typeof(ConduitActionAttribute), false);
                 if (attributes.Length == 0)
                 {
-                    Debug.LogError($"{targetMethod} - Did not have expected Conduit attribute");
+                    VLog.E($"{targetMethod} - Did not have expected Conduit attribute");
                     resolvedAll = false;
                     continue;
                 }
@@ -140,6 +142,15 @@ namespace Meta.Conduit
             }
 
             return resolvedAll;
+        }
+
+        private MethodInfo GetBestMethodMatch(Type targetType, string method, Type[] parameterTypes)
+        {
+            var exactMatch = targetType.GetMethod(method,
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static, null, CallingConventions.Any,
+                parameterTypes, null);
+
+            return exactMatch;
         }
 
         /// <summary>

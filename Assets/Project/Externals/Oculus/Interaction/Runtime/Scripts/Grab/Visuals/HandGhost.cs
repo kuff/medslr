@@ -19,7 +19,6 @@
  */
 
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Oculus.Interaction.HandGrab.Visuals
 {
@@ -75,7 +74,7 @@ namespace Oculus.Interaction.HandGrab.Visuals
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(_puppet);
+            this.AssertField(_puppet, nameof(_puppet));
         }
 
         /// <summary>
@@ -93,6 +92,12 @@ namespace Oculus.Interaction.HandGrab.Visuals
             Transform relativeTo = handGrabPose.RelativeTo;
             _puppet.SetJointRotations(userPose.JointRotations);
             SetRootPose(handGrabPose.RelativeGrip, relativeTo);
+        }
+
+        public void SetPose(HandPose userPose, Pose rootPose)
+        {
+            _puppet.SetJointRotations(userPose.JointRotations);
+            _puppet.SetRootPose(rootPose);
         }
 
         /// <summary>

@@ -8,7 +8,7 @@ namespace Oculus.Platform.Models
   using System.Collections.Generic;
   using UnityEngine;
 
-  /// DEPRECATED. Will be removed from headers at version v49.
+  /// DEPRECATED. Will be removed from headers at version v51.
   public class CalApplicationFinalized
   {
     /// Number of milliseconds to wait before launching the app. Launcher should

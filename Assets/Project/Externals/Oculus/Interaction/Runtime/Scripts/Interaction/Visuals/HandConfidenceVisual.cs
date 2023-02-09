@@ -61,8 +61,8 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(Hand);
-            Assert.IsNotNull(_handMaterialPropertyBlockEditor);
+            this.AssertField(Hand, nameof(Hand));
+            this.AssertField(_handMaterialPropertyBlockEditor, nameof(_handMaterialPropertyBlockEditor));
             _lastTime = Time.time;
             this.EndStart(ref _started);
         }

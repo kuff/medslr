@@ -22,7 +22,7 @@ namespace Oculus.Platform.Models
     /// presence.
     public readonly string LaunchSource;
     public readonly LaunchType LaunchType;
-    /// DEPRECATED. Will be removed from headers at version v49.
+    /// DEPRECATED. Will be removed from headers at version v51.
     ///
     /// If provided, the intended room the user would like to be in
     public readonly UInt64 RoomID;

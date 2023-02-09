@@ -49,7 +49,7 @@ namespace Oculus.Interaction.HandGrab.Editor
             AssignMissingGhostProvider();
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             DestroyGhost();
         }
@@ -115,54 +115,6 @@ namespace Oculus.Interaction.HandGrab.Editor
             }
         }
 
-        #region generation
-        /// <summary>
-        /// Generates a new HandGrabPoseData that mirrors the provided one. Left hand becomes right hand and vice-versa.
-        /// The mirror axis is defined by the surface of the snap point, if any, if none a best-guess is provided
-        /// but note that it can then moved manually in the editor.
-        /// </summary>
-        /// <param name="originalPoint">The point to mirror</param>
-        /// <param name="originalPoint">The target HandGrabPose to set as mirrored of the originalPoint</param>
-        public static void Mirror(HandGrabPose originalPoint, HandGrabPose mirrorPoint)
-        {
-            HandPose handPose = originalPoint.HandPose;
-
-            Handedness oppositeHandedness = handPose.Handedness == Handedness.Left ? Handedness.Right : Handedness.Left;
-
-            HandGrabPoseData mirrorData = originalPoint.SaveData();
-            mirrorData.handPose.Handedness = oppositeHandedness;
-
-            if (originalPoint.SnapSurface != null)
-            {
-                mirrorData.gripPose = originalPoint.SnapSurface.MirrorPose(mirrorData.gripPose);
-            }
-            else
-            {
-                mirrorData.gripPose = mirrorData.gripPose.MirrorPoseRotation(Vector3.forward, Vector3.up);
-                Vector3 translation = Vector3.Project(mirrorData.gripPose.position, Vector3.right);
-                mirrorData.gripPose.position = mirrorData.gripPose.position - 2f * translation;
-            }
-
-            mirrorPoint.LoadData(mirrorData, originalPoint.RelativeTo);
-            if (originalPoint.SnapSurface != null)
-            {
-                Grab.GrabSurfaces.IGrabSurface mirroredSurface = originalPoint.SnapSurface.CreateMirroredSurface(mirrorPoint.gameObject);
-                mirrorPoint.InjectOptionalSurface(mirroredSurface);
-            }
-        }
-
-        public static void CloneHandGrabPose(HandGrabPose originalPoint, HandGrabPose targetPoint)
-        {
-            HandGrabPoseData mirrorData = originalPoint.SaveData();
-            targetPoint.LoadData(mirrorData, originalPoint.RelativeTo);
-            if (originalPoint.SnapSurface != null)
-            {
-                Grab.GrabSurfaces.IGrabSurface mirroredSurface = originalPoint.SnapSurface.CreateDuplicatedSurface(targetPoint.gameObject);
-                targetPoint.InjectOptionalSurface(mirroredSurface);
-            }
-        }
-        #endregion
-
         #region ghost
 
         private void AssignMissingGhostProvider()
@@ -221,8 +173,7 @@ namespace Oculus.Interaction.HandGrab.Editor
                 Pose recorderPose = _handGrabPose.transform.GetPose();
                 if (_handGrabPose.SnapSurface.CalculateBestPoseAtSurface(ray, recorderPose, out Pose target))
                 {
-                    ghostTargetPose.position = _handGrabPose.RelativeTo.InverseTransformPoint(target.position);
-                    ghostTargetPose.rotation = Quaternion.Inverse(_handGrabPose.RelativeTo.rotation) * target.rotation;
+                    _handGrabPose.RelativeTo.Delta(target, ref ghostTargetPose);
                 }
             }
 

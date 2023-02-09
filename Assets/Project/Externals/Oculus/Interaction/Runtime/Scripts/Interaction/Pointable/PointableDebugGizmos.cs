@@ -112,7 +112,7 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(Pointable);
+            this.AssertField(Pointable, nameof(Pointable));
             _points = new Dictionary<int, PointData>();
             this.EndStart(ref _started);
         }

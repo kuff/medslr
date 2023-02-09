@@ -54,6 +54,9 @@ namespace Oculus.Interaction
 
         public static event Action<PointableCanvasEventArgs> WhenSelectableUnhovered;
 
+        [Tooltip("If true, the initial press position will be used as the drag start " +
+            "position, rather than the position when drag threshold is exceeded. This is used " +
+            "to prevent the pointer position shifting relative to the surface while dragging.")]
         [SerializeField]
         private bool _useInitialPressPositionForDrag = true;
 
@@ -73,7 +76,7 @@ namespace Oculus.Interaction
 
         public static void RegisterPointableCanvas(IPointableCanvas pointerCanvas)
         {
-            Assert.IsNotNull(Instance, "A PointableCanvasModule is required in the scene.");
+            Assert.IsNotNull(Instance, $"A <b>{nameof(PointableCanvasModule)}</b> is required in the scene.");
             Instance.AddPointerCanvas(pointerCanvas);
         }
 

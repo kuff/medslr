@@ -67,12 +67,7 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            foreach (IInteractable interactable in Interactables)
-            {
-                Assert.IsNotNull(interactable);
-            }
-
-            Assert.IsTrue(_interactables != null && _interactables.Count > 0);
+            this.AssertCollectionItems(Interactables, nameof(Interactables));
 
             _limits = new List<InteractableLimits>();
             foreach (IInteractable interactable in Interactables)

@@ -57,9 +57,9 @@ namespace Oculus.Interaction.PoseDetection
 
         protected virtual void Start()
         {
-            Assert.IsNotNull(Hand);
-            Assert.IsTrue(_entryColliders != null && _entryColliders.Length > 0);
-            Assert.IsTrue(_exitColliders != null && _exitColliders.Length > 0);
+            this.AssertField(Hand, nameof(Hand));
+            this.AssertCollectionField(_entryColliders, nameof(_entryColliders));
+            this.AssertCollectionField(_exitColliders, nameof(_exitColliders));
         }
 
         protected virtual void Update()

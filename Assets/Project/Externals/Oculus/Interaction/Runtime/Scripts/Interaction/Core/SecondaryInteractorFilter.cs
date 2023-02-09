@@ -55,7 +55,7 @@ namespace Oculus.Interaction
         protected virtual void Start()
         {
             this.BeginStart(ref _started);
-            Assert.IsNotNull(PrimaryInteractable);
+            this.AssertField(PrimaryInteractable, nameof(PrimaryInteractable));
             this.EndStart(ref _started);
         }
 

@@ -9,7 +9,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Facebook.WitAi.Windows
+namespace Meta.WitAi.Windows
 {
     public abstract class WitScriptableWizard : ScriptableWizard
     {
@@ -42,7 +42,7 @@ namespace Facebook.WitAi.Windows
             // Set wizard to max width
             size.x = WitStyles.WindowMaxWidth;
             // Wizards add additional padding
-            size.y += 70f;
+            size.y += 120f;
 
             // Clamp wizard sizes
             maxSize = minSize = size;

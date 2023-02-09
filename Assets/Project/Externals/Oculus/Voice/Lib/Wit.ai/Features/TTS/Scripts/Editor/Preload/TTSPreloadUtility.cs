@@ -12,12 +12,12 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using Facebook.WitAi.Utilities;
-using Facebook.WitAi.TTS.Data;
-using Facebook.WitAi.Data.Configuration;
-using Facebook.WitAi.Lib;
+using Meta.WitAi;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.Data.Configuration;
+using Meta.WitAi.Json;
 
-namespace Facebook.WitAi.TTS.Editor.Preload
+namespace Meta.WitAi.TTS.Editor.Preload
 {
     public static class TTSPreloadUtility
     {
