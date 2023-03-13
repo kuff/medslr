@@ -12,8 +12,8 @@ namespace Unity.VisualScripting.Generated.PropertyProviders
 {
 	
 	
-	[global::Unity.VisualScripting.SerializedPropertyProviderAttribute(typeof(global::InitializeEvent))]
-	public class PropertyProvider_InitializeEvent : Unity.VisualScripting.SerializedPropertyProvider<InitializeEvent>
+	[global::Unity.VisualScripting.SerializedPropertyProviderAttribute(typeof(global::OVRInitializeEvent))]
+	public class PropertyProvider_InitializeEvent : Unity.VisualScripting.SerializedPropertyProvider<OVRInitializeEvent>
 	{
 	}
 }
