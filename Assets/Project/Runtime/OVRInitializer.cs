@@ -1,14 +1,9 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
-
-[Serializable]
-public class InitializeEvent : UnityEvent<Transform, OVRSkeleton, OVRSkeleton> { }
 
 public class OVRInitializer : MonoBehaviour
 {
-    public InitializeEvent OnInitialized = new InitializeEvent();
+    public OVRInitializeEvent OnInitialized = new OVRInitializeEvent();
     
     [SerializeField] private Transform headTransform;
     [SerializeField] private OVRSkeleton leftHandSkeleton, rightHandSkeleton;
