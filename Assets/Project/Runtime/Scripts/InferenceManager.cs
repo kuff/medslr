@@ -62,28 +62,34 @@ public class InferenceManager : MonoBehaviour
 
     private static Tensor GetInputTensor(string sentence)
     {
-        // Pad the sentence until it meets model kernel requirements
-        while (sentence.Length < N) sentence = string.Concat(" ", sentence);
-        
-        // Define input Tensor and parse the sentence by vocab indices
-        var tensor = new Tensor(N, Vocab.Length);
-        var startIdx = sentence.Length - N < 0 ? sentence.Length : N;
-        var sentenceData = sentence[^startIdx..]
+        // Filter out characters not compatible with the model
+        var sentenceData = sentence
             .Where(c => Vocab.IndexOf(char.ToLower(c)) != -1)
-            .Select(c => Vocab.IndexOf(char.ToLower(c)))  // + 1
+            .Select(c => Vocab.IndexOf(char.ToLower(c)))
             .ToArray();
+        
+        // Extract as many elements as possible, up to N
+        var startIdx = sentenceData.Length - N < 0 ? sentence.Length : N;
+        var sentenceDataList = sentenceData[^startIdx..].ToList();
 
-        // One-hot-encode sentence data into the input Tensor
-        for (var i = 0; i < Mathf.Min(sentenceData.Length, startIdx); i++)
+        // Pad the input in case there isn't enough elements to fill the kernel
+        while (sentenceDataList.Count < N) sentenceDataList.Insert(0, Vocab.IndexOf(" ", StringComparison.Ordinal));
+        
+        // One-hot-encode character data into the input tensor
+        var tensor = new Tensor(N, Vocab.Length);
+        for (var i = 0; i < N; i++)
         {
 #if UNITY_EDITOR
-            Debug.Log($"i: {i}, sentenceData[i]: {sentenceData[i]}");
+            Debug.Log($"i: {i}, sentenceData[i]: {sentenceDataList[i]}, Vocab[sentenceData[i]]: {Vocab[sentenceDataList[i]]}");
 #endif
-            tensor[i, sentenceData[i]] = 1f;
+            tensor[i, sentenceDataList[i]] = 1f;
         }
 
+        // Transpose the tensor to fit with the model
         tensor = tensor.Reshape(new TensorShape(1, 1, N, Vocab.Length));
-        Debug.Log(tensor.shape);
+#if UNITY_EDITOR
+        Debug.Log($"tensor.shape: {tensor.shape}");
+#endif
 
         return tensor;
     }

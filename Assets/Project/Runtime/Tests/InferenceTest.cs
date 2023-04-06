@@ -40,9 +40,13 @@ public class InferenceTest
     {
         while (!_tm.HasConcluded())
         {
-            var targetChar = _tm.GetTargetCharacter();
+            Debug.Log("\nResults:\n");
             var inferenceResult = _im.GetInferenceResult();
-            Debug.Log($"\nTarget Character: {targetChar}, Inference Result:\n");
+            var userSentence = _tm.GetUserSentence();
+            Debug.Log(userSentence);
+            var targetCharacter = _tm.GetTargetCharacter();
+            for (var i = 0; i < userSentence.Length; i++) targetCharacter = i < 4 ? string.Concat(i, targetCharacter) : string.Concat(" ", targetCharacter);
+            Debug.Log(targetCharacter + "\n");
             for (var i = 0; i < Vocab.Length; i++) Debug.Log($"{Vocab[i]}: {inferenceResult[i]},");
             
             _tm.Step();
