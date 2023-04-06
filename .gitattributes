@@ -1,5 +1,6 @@
-*.dylib
-*.bundle
+*.dylib filter=lfs diff=lfs merge=lfs -text
+*.bundle filter=lfs diff=lfs merge=lfs -text
+*.onnx filter=lfs diff=lfs merge=lfs -text
 
 ## from https://gist.github.com/nemotoo/b8a1c3a0f1225bb9231979f389fd4f3f ##
 
