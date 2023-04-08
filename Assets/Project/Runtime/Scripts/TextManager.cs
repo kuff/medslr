@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TextManager : MonoBehaviour
 {
-    private const string NoSpaceVocab = "abcdefghijklmnopqrstuvwxyzæøå";
+    private static readonly string Vocab = VocabularyProvider.GetVocabJustLetters();
     
     [SerializeField] private List<string> sentences;
     
@@ -61,7 +61,7 @@ public class TextManager : MonoBehaviour
                 _userIndex = 0;
                 break;
             }
-            if (NoSpaceVocab.IndexOf(GetTargetCharacter().ToLower(), StringComparison.Ordinal) != -1) break;
+            if (Vocab.IndexOf(GetTargetCharacter().ToLower(), StringComparison.Ordinal) != -1) break;
         }
     }
 

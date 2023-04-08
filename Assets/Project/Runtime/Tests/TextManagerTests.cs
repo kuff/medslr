@@ -4,8 +4,9 @@ using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+// ReSharper disable StringLiteralTypo, CommentTypo
 
-public class TextTest
+public class TextManagerTests
 {
     private TextManager _textManager;
     private Scene _testScene;
@@ -57,8 +58,10 @@ public class TextTest
     public void UserSentence_UpdatesCorrectlyWhenStepping()
     {
         // TODO: Update to test all sentences...
-        // ReSharper disable once CommentTypo
+        
         // NOTE: This logic is currently hardcoded for the sentence "Wow! Tusindvis af fisk!"
+        const int specificOffset = 2;
+        
         Assert.AreEqual(string.Empty, _textManager.GetUserSentence());
         
         _textManager.Step();
@@ -69,7 +72,7 @@ public class TextTest
             _textManager.Step();
         }
 
-        Assert.AreEqual(_sentences[0][..^2], _textManager.GetUserSentence());
+        Assert.AreEqual(_sentences[0][..^specificOffset], _textManager.GetUserSentence());
         
         _textManager.Step();
         Assert.AreEqual(string.Empty, _textManager.GetUserSentence());
@@ -79,6 +82,7 @@ public class TextTest
     public void TargetCharacter_UpdatesCorrectlyWhenStepping()
     {
         // TODO: Update to test all sentences...
+        
         Assert.AreEqual(_sentences[0][0].ToString(), _textManager.GetTargetCharacter());
 
         _textManager.Step();

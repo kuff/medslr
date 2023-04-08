@@ -3,10 +3,10 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class InferenceTest
+public class InferenceManagerTests
 {
-    private const string Vocab = "abcdefghijklmnopqrstuvwxyzæøå ";
-    
+    private static readonly string Vocab = VocabularyProvider.GetVocab();
+
     private Scene _testScene;
     
     private TextManager _tm;

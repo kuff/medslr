@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(TextManager))]
 public class InferenceManager : MonoBehaviour
 {
-    private const string Vocab = "abcdefghijklmnopqrstuvwxyzæøå ";
+    private static readonly string Vocab = VocabularyProvider.GetVocab();
     private const int N = 4;
     
     public NNModel model;
