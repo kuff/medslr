@@ -41,7 +41,7 @@ public class InferenceManagerTests
         while (!_tm.HasConcluded())
         {
             Debug.Log("\nResults:\n");
-            var inferenceResult = _im.GetInferenceResult();
+            var inferenceResult = _im.CalculateInferenceResult();
             var userSentence = _tm.GetUserSentence();
             Debug.Log(userSentence);
             var targetCharacter = _tm.GetTargetCharacter();

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using JetBrains.Annotations;
 using Unity.Barracuda;
 using UnityEngine;
 
@@ -9,8 +10,10 @@ public class InferenceManager : MonoBehaviour
     private static readonly string Vocab = VocabularyProvider.GetVocab();
     private const int N = 4;
     
-    public NNModel model;
+    private float[] _result;
     
+    public NNModel model;
+
     // private TextManager _tm;
     // private IWorker _worker;
 
@@ -25,7 +28,7 @@ public class InferenceManager : MonoBehaviour
     //     _tm = GetComponent<TextManager>();
     // }
 
-    public float[] GetInferenceResult()
+    public ref float[] CalculateInferenceResult()
     {
         var runtimeModel = ModelLoader.Load(model);
         var worker = WorkerFactory.CreateWorker(runtimeModel, WorkerFactory.Device.CPU);
@@ -33,20 +36,35 @@ public class InferenceManager : MonoBehaviour
         var tm = GetComponent<TextManager>();
 
         var sentence = tm.GetUserSentence();
-        if (sentence == "") return GetUniformPredictionArray();
+        if (sentence == "")
+        {
+            _result = GetUniformPredictionArray();
+        }
+        else
+        {
+            // Run model
+            var input = GetInputTensor(sentence);
+            worker.Execute(input);
         
-        // Run model
-        var input = GetInputTensor(sentence);
-        worker.Execute(input);
-        
-        // Retrieve result
-        var output = worker.CopyOutput();
-        input.Dispose();
-        worker.Dispose();
+            // Retrieve result
+            var output = worker.CopyOutput();
+            input.Dispose();
+            worker.Dispose();
 
-        // Analyze result
-        var result = GetSoftmax(in output);  // TODO: make sure batch dimension is squeezed...
-        return result;
+            // Analyze result
+            var result = GetSoftmax(in output);  // TODO: make sure batch dimension is squeezed...
+        
+            // Cache result
+            _result = result;
+        }
+        
+        return ref GetInferenceResult();
+    }
+
+    [CanBeNull]
+    public ref float[] GetInferenceResult()
+    {
+        return ref _result;
     }
 
     private static float[] GetUniformPredictionArray()
