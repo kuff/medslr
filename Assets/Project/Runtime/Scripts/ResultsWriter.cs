@@ -1,13 +1,15 @@
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 
 public class ResultsWriter : MonoBehaviour
 {
-    [Tooltip("The TextMeshProUGUI component to write to")]
+    [Tooltip("The TextMeshProUGUI component to write to.")]
     [SerializeField] private TextMeshProUGUI text;
     
     private InferenceManager _im;
+    private float[] _prevResults;
 
     private void Start()
     {
@@ -18,19 +20,25 @@ public class ResultsWriter : MonoBehaviour
     private void Update()
     {
         var results = _im.GetInferenceResult();
-        if (results == null || results.Length == 0) return;
-        
-        results.ToList().Sort();  // TODO: will need changing once the final result is a confluence of both nl and gr
+
+        // Stop if the data is not new or undefined
+        if (results == _prevResults || results == null || results.Length == 0) return;
+        _prevResults = results;
 
         var vocab = VocabularyProvider.GetVocabArray();
-        var resultString = "";
-        for (var i = 0; i < results.Length; i++)
-        {
-            var roundedResult = Mathf.Round(results[i] * 10_000) / 10_000f;
+        
+        // Construct the dictionary
+        var dictionary = new Dictionary<char, float>();
+        for (var i = 0; i < vocab.Length; i++) dictionary[vocab[i]] = results[i];
 
-            resultString += $"{vocab[i]}: {roundedResult} ";
-        }
+        // Sort the dictionary by values
+        var sortedDictionary = dictionary.OrderBy(x => x.Value)
+            .ToDictionary(x => x.Key, x => x.Value);
+        
+        // Construct list text from sortedDictionary for the text UI element
+        var resultString = sortedDictionary.Aggregate("", (current, pair) => current + $"{pair.Key}: {pair.Value:F4}\n");
 
+        // Update UI element text
         text.SetText(resultString);
     }
 }

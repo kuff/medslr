@@ -61,6 +61,11 @@ public class InferenceManager : MonoBehaviour
         return ref GetInferenceResult();
     }
 
+    public void CalculateInferenceResultVoid()
+    {
+        CalculateInferenceResult();
+    }
+
     [CanBeNull]
     public ref float[] GetInferenceResult()
     {
