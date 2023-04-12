@@ -3,66 +3,70 @@ using System.Linq;
 using JetBrains.Annotations;
 using Unity.Barracuda;
 using UnityEngine;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMethodReturnValue.Global
 
 [RequireComponent(typeof(TextManager))]
 public class InferenceManager : MonoBehaviour
 {
+    public NNModel model;
+    
     private static readonly string Vocab = VocabularyProvider.GetVocab();
-    private const int N = 4;
+    private const int N = 2;
     
     private float[] _result;
-    
-    public NNModel model;
+    private static string _inputString = "";
 
-    // private TextManager _tm;
-    // private IWorker _worker;
+    private TextManager _tm;
+    private IWorker _worker;
 
-    // private void OnEnable()
-    // {
-    //     var runtimeModel = ModelLoader.Load(model);
-    //     _worker = WorkerFactory.CreateWorker(runtimeModel, WorkerFactory.Device.CPU);
-    // }
+    private void Start()
+    {
+        Initialize();
+    }
 
-    // private void Start()
-    // {
-    //     _tm = GetComponent<TextManager>();
-    // }
+    public void Initialize()
+    {
+        // Get the TextManager component attached to the current GameObject
+        _tm = GetComponent<TextManager>();
+
+        // Load the ngram model
+        var runtimeModel = ModelLoader.Load(model);
+
+        // Create a worker (inference engine) to execute the model on the CPU and enable verbose logging
+        _worker = runtimeModel.CreateWorker(WorkerFactory.Device.CPU, verbose: true);
+    }
 
     public ref float[] CalculateInferenceResult()
     {
-        var runtimeModel = ModelLoader.Load(model);
-        var worker = WorkerFactory.CreateWorker(runtimeModel, WorkerFactory.Device.CPU);
-        
-        var tm = GetComponent<TextManager>();
+#if UNITY_EDITOR
+        Debug.Log("Calculating inference result...");
+#endif
+        // Get input
+        var sentence = _tm.GetUserSentence();
 
-        var sentence = tm.GetUserSentence();
-        if (sentence == "")
-        {
-            _result = GetUniformPredictionArray();
-        }
-        else
-        {
-            // Run model
-            var input = GetInputTensor(sentence);
-            worker.Execute(input);
-        
-            // Retrieve result
-            var output = worker.CopyOutput();
-            input.Dispose();
-            worker.Dispose();
+        // Run model
+        var input = GetInputTensor(sentence);
+        _worker.Execute(input);
+    
+        // Retrieve result
+        var output = _worker.CopyOutput();  // TODO: Turn into coroutine
+        input.Dispose();
 
-            // Analyze result
-            var result = GetSoftmax(in output);  // TODO: make sure batch dimension is squeezed...
-        
-            // Cache result
-            _result = result;
-        }
+        // Analyze result
+        var result = GetSoftmax(in output);
+        output.Dispose();
+    
+        // Cache result
+        _result = result;
+        // _result = output.ToReadOnlyArray();
         
         return ref GetInferenceResult();
     }
 
     public void CalculateInferenceResultVoid()
     {
+        // For use in Visual Scripting
         CalculateInferenceResult();
     }
 
@@ -70,17 +74,6 @@ public class InferenceManager : MonoBehaviour
     public ref float[] GetInferenceResult()
     {
         return ref _result;
-    }
-
-    private static float[] GetUniformPredictionArray()
-    {
-        var result = new float[Vocab.Length];
-        var value = 1f / result.Length;
-
-        for (var i = 0; i < result.Length; i++)
-            result[i] = value;
-
-        return result;
     }
 
     private static Tensor GetInputTensor(string sentence)
@@ -92,45 +85,82 @@ public class InferenceManager : MonoBehaviour
             .ToArray();
         
         // Extract as many elements as possible, up to N
-        var startIdx = sentenceData.Length - N < 0 ? sentence.Length : N;
+        var startIdx = sentenceData.Length - N < 0 ? sentenceData.Length : N;
         var sentenceDataList = sentenceData[^startIdx..].ToList();
 
-        // Pad the input in case there isn't enough elements to fill the kernel
-        while (sentenceDataList.Count < N) sentenceDataList.Insert(0, Vocab.IndexOf(" ", StringComparison.Ordinal));
-        
         // One-hot-encode character data into the input tensor
         var tensor = new Tensor(N, Vocab.Length);
-        for (var i = 0; i < N; i++)
+        _inputString = "";
+        var offset = N - sentenceDataList.Count;
+        for (var i = 0; i < sentenceDataList.Count; i++)
         {
 #if UNITY_EDITOR
             Debug.Log($"i: {i}, sentenceData[i]: {sentenceDataList[i]}, Vocab[sentenceData[i]]: {Vocab[sentenceDataList[i]]}");
 #endif
-            tensor[i, sentenceDataList[i]] = 1f;
+            _inputString += Vocab[sentenceDataList[i]];
+            tensor[i + offset, sentenceDataList[i]] = 1f;
         }
 
         // Transpose the tensor to fit with the model
-        tensor = tensor.Reshape(new TensorShape(1, 1, N, Vocab.Length));
+        tensor = tensor.Reshape(new TensorShape(1, N, Vocab.Length, 1));
 #if UNITY_EDITOR
-        Debug.Log($"tensor.shape: {tensor.shape}");
-#endif
+        Debug.Log($"tensor.shape: {tensor}");
+        Debug.Log($"N: {tensor.height}, V: {tensor.width}");
+        for (var w = 0; w < tensor.height; w++)
+        {
+            var channelString = "[";
+            for (var c = 0; c < tensor.width; c++)
+            {
+                var value = tensor[0, 0, w, c];
+                channelString += $" {value},";
+            }
 
+            var finalString = $"{channelString[..^1]} ]";
+            Debug.Log(finalString);
+        }
+#endif
         return tensor;
+    }
+
+    public static ref string GetInputString()
+    {
+        // Retrieves the string used as input for the model
+        return ref _inputString;
     }
     
     private static float[] GetSoftmax(in Tensor input)
     {
+        // Convert the input tensor to a read-only array
         var x = input.ToReadOnlyArray();
 
+        // Find the maximum value in the input array
         var max = x.Max();
-        var expX = x.Select(v => (float)Math.Exp(v - max)).ToArray(); // Subtract the max to avoid numerical instability
-        var expXSum = expX.Sum();
-        var softmax = expX.Select(v => v / expXSum).ToArray();
-        
+
+        // Initialize the sum of exponentiated values and the softmax array
+        double expXSum = 0;
+        var softmax = new float[x.Length];
+
+        // Iterate through the input array, exponentiate the values, subtract the max value, and sum the results
+        for (var i = 0; i < x.Length; i++)
+        {
+            softmax[i] = (float)Math.Exp(x[i] - max);  // Subtracting max value to avoid numerical instability
+            expXSum += softmax[i];
+        }
+
+        // Normalize the softmax array by dividing each value by the sum of exponentiated values
+        for (var i = 0; i < softmax.Length; i++) softmax[i] /= (float)expXSum;
+
+#if UNITY_EDITOR
+        // Log the sum of the softmax array values (should be close to 1) when running in the Unity editor
+        Debug.Log($"softmax.Sum(): {softmax.Sum()}");
+#endif
+
+        // Return the resulting softmax array
         return softmax;
     }
-
-    // private void OnDisable()
-    // {
-    //     _worker.Dispose();
-    // }
+    
+    private void OnDisable()
+    {
+        _worker.Dispose();
+    }
 }

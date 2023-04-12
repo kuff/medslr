@@ -14,7 +14,7 @@ public class ResultsWriter : MonoBehaviour
     private void Start()
     {
         _im = FindObjectOfType<InferenceManager>();
-        // _im.CalculateInferenceResult();
+        //_im.CalculateInferenceResult();
     }
 
     private void Update()
@@ -25,11 +25,12 @@ public class ResultsWriter : MonoBehaviour
         if (results == _prevResults || results == null || results.Length == 0) return;
         _prevResults = results;
 
-        var vocab = VocabularyProvider.GetVocabArray();
+        results = results.Take(results.Length - 1).ToArray();  // Ignore result for " " character
         
         // Construct the dictionary
+        var vocab = VocabularyProvider.GetVocabArray();
         var dictionary = new Dictionary<char, float>();
-        for (var i = 0; i < vocab.Length; i++) dictionary[vocab[i]] = results[i];
+        for (var i = 0; i < results.Length; i++) dictionary[vocab[i]] = results[i];
 
         // Sort the dictionary by values
         var sortedDictionary = dictionary.OrderBy(x => x.Value)
@@ -39,6 +40,6 @@ public class ResultsWriter : MonoBehaviour
         var resultString = sortedDictionary.Aggregate("", (current, pair) => current + $"{pair.Key}: {pair.Value:F4}\n");
 
         // Update UI element text
-        text.SetText(resultString);
+        text.SetText(resultString + $"\ninput: {InferenceManager.GetInputString()}");
     }
 }

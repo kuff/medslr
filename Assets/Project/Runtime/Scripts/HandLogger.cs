@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 
 /*
@@ -188,8 +187,8 @@ public class HandLogger : MonoBehaviour
                 {
                     // Compare other objects by turning them to json and comparing the strings
                     // TODO: Come up with a more performant approach to this
-                    var obj1 = JsonConvert.SerializeObject(data);
-                    var obj2 = JsonConvert.SerializeObject(_previousLogs[(int)type]);
+                    var obj1 = JsonUtility.ToJson(data);
+                    var obj2 = JsonUtility.ToJson(_previousLogs[(int)type]);
                     if (obj1 == obj2) return;
                 }
             }

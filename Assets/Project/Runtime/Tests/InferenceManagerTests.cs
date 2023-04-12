@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -25,6 +27,7 @@ public class InferenceManagerTests
         // Find test components
         _tm = testObject.GetComponent<TextManager>();
         _im = testObject.GetComponent<InferenceManager>();
+        _im.Initialize();
     }
     
 //     [TearDown]
@@ -47,7 +50,22 @@ public class InferenceManagerTests
             var targetCharacter = _tm.GetTargetCharacter();
             for (var i = 0; i < userSentence.Length; i++) targetCharacter = i < 4 ? string.Concat(i, targetCharacter) : string.Concat(" ", targetCharacter);
             Debug.Log(targetCharacter + "\n");
-            for (var i = 0; i < Vocab.Length; i++) Debug.Log($"{Vocab[i]}: {inferenceResult[i]},");
+            
+            // for (var i = 0; i < Vocab.Length; i++) Debug.Log($"{Vocab[i]}: {inferenceResult[i]},");
+            var results = inferenceResult.ToList().Take(inferenceResult.Length/* - 1*/).ToArray();
+        
+            // Construct the dictionary
+            var vocab = VocabularyProvider.GetVocabArray();
+            var dictionary = new Dictionary<char, float>();
+            for (var i = 0; i < results.Length; i++) dictionary[vocab[i]] = results[i];
+
+            // Sort the dictionary by values
+            var sortedDictionary = dictionary.OrderBy(x => x.Value)
+                .ToDictionary(x => x.Key, x => x.Value);
+        
+            // Construct list text from sortedDictionary for the text UI element
+            var resultString = sortedDictionary.Aggregate("", (current, pair) => current + $"{pair.Key}: {pair.Value:F4}\n");
+            Debug.Log(resultString);
             
             _tm.Step();
         }

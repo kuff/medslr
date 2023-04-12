@@ -26,7 +26,7 @@ public class TextManager : MonoBehaviour
         _userIndex = 0;
 
         _userProgress = 0;
-        _totalProgress = sentences.Sum(s => s.Length);
+        _totalProgress = sentences.SelectMany(s => s).Count(char.IsLetter);
     }
 
     public string GetActiveSentence()
@@ -48,12 +48,13 @@ public class TextManager : MonoBehaviour
 
     public void Step()
     {
+        var stepProgress = true;
         while (true)
         {
             if (HasConcluded()) break;
 
             _userIndex++;
-            _userProgress++;
+            if (stepProgress) _userProgress++;
 
             if (_userIndex == GetActiveSentence().Length)
             {
@@ -61,7 +62,9 @@ public class TextManager : MonoBehaviour
                 _userIndex = 0;
                 break;
             }
+
             if (Vocab.IndexOf(GetTargetCharacter().ToLower(), StringComparison.Ordinal) != -1) break;
+            stepProgress = false;
         }
     }
 

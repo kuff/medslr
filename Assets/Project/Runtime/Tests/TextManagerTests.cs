@@ -145,9 +145,11 @@ public class TextManagerTests
         foreach (var sentence in _sentences)
         {
             Assert.AreEqual(totalProgress, _textManager.GetUserProgress());
-            totalProgress += sentence.Length;
 
-            for (var i = 0; i < sentence.Length - GetNonAlphabeticCharacters(sentence); i++)
+            var userProgress = sentence.Length - GetNonAlphabeticCharacters(sentence);
+            totalProgress += userProgress;
+
+            for (var i = 0; i < userProgress; i++)
             {
                 _textManager.Step();
             }
@@ -159,6 +161,6 @@ public class TextManagerTests
     [Test]
     public void TotalProgress_ReturnsCorrectValue()
     {
-        Assert.AreEqual(_sentences.Sum(s => s.Length), _textManager.GetTotalProgress());
+        Assert.AreEqual(_sentences.SelectMany(s => s).Count(char.IsLetter), _textManager.GetTotalProgress());
     }
 }

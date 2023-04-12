@@ -18,7 +18,7 @@ MonoBehaviour:
     class.
   preview: {fileID: 0}
   dependencies:
-  - dependency: {fileID: 5022602860645237092, guid: 7a723d549005d3047a32855a2ba24b33,
+  - dependency: {fileID: 5022602860645237092, guid: 41707e15755fcec459deb4b15cf23ef9,
       type: 3}
     instantiationMode: 1
   templatePipeline: {fileID: 0}
