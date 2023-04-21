@@ -26,7 +26,9 @@ public class HandLogger : MonoBehaviour
         Time,
         WizardDecision,
         StateChange,
-        HandEvent
+        HandEvent,
+        HandCapture,
+        SentenceTarget
     }
 
     private OVRPlugin.HandState _hsLeft = new OVRPlugin.HandState();
@@ -229,6 +231,12 @@ public class HandLogger : MonoBehaviour
             case LogType.StateChange:
             case LogType.HandEvent:
                 _logQueue.Add(baseString + (int)data![0]);
+                break;
+            case LogType.HandCapture:
+                _logQueue.Add(baseString + string.Concat(data));
+                break;
+            case LogType.SentenceTarget:
+                _logQueue.Add(baseString + string.Concat(data));
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);

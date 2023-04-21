@@ -92,4 +92,10 @@ public class TextManager : MonoBehaviour
     {
         return _totalProgress;
     }
+
+    public void LogState()
+    {
+        var dataString = GetUserSentence() + GetTargetCharacter();
+        HandLogger.Log(HandLogger.LogType.SentenceTarget, dataString, ignorePrevious:true);
+    }
 }
