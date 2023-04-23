@@ -65,7 +65,12 @@ public class GestureManager : MonoBehaviour
         var (_, aggregateValues) = GetMeanAndAggregateResults();
         _result = GetDeltaValues(in aggregateValues);
 
-        Debug.Log($"GESTURES a: {_result[0]}, b: {_result[1]}, c: {_result[2]}");
+#if UNITY_EDITOR
+        var gestureString = $"GESTURES target: {_tm.GetTargetCharacter()}";
+        for (var i = 0; i < TargetVectors.all.GetLength(0); i++)
+            gestureString += $", {VocabularyProvider.GetVocabArrayJustLetters()[i]}: {_result[i]}";
+        Debug.Log(gestureString);
+#endif
 
         var activeHandIndex = _activeHand.GetSkeletonType() == OVRSkeleton.SkeletonType.HandLeft ? 0 : 1;
         var sb = new StringBuilder();
