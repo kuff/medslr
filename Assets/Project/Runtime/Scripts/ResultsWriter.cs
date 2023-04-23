@@ -45,7 +45,7 @@ public class ResultsWriter : MonoBehaviour
         var d = gestureRanked[0] / gestureRanked[1] * c;
         Debug.Log($"d: {d}, gestureRanked[0]: {gestureRanked[0]}, inferenceResult[gestureResult.IndexOf(gestureRanked[i])]: {inferenceResult[gestureResult.IndexOf(gestureRanked[0])]}");
         for (var i = 0; i < c; i++)
-            result[gestureResult.IndexOf(gestureRanked[i])] = gestureRanked[i] - (inferenceResult[gestureResult.IndexOf(gestureRanked[i])] * d);
+            result[gestureResult.IndexOf(gestureRanked[i])] = gestureRanked[i] - (Mathf.Max(inferenceResult[gestureResult.IndexOf(gestureRanked[i])], 0.4f) * d);
 
         // Construct the dictionary
         var vocab = VocabularyProvider.GetVocabArray();
