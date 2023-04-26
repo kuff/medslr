@@ -7,9 +7,9 @@ public class ParticleManager : MonoBehaviour
     [SerializeField] private float drawInterval;
 
     private HandProvider _hp;
-    private GestureManager _gm;
-    private TextManager _tm;
     private VisualEffect[] _effects;
+    private TextManager _tm;
+    private ResultsManager _rm;
     private OVRSkeleton _activeHand;
     private bool _drawEffect;
     private float _drawTime;
@@ -17,9 +17,9 @@ public class ParticleManager : MonoBehaviour
     private void Start()
     {
         _hp = FindObjectOfType<HandProvider>();
-        _gm = FindObjectOfType<GestureManager>();
-        _tm = FindObjectOfType<TextManager>();
         _effects = GetComponentsInChildren<VisualEffect>();
+        _tm = FindObjectOfType<TextManager>();
+        _rm = FindObjectOfType<ResultsManager>();
         _drawTime = drawInterval;
         _drawEffect = false;
 
@@ -44,29 +44,25 @@ public class ParticleManager : MonoBehaviour
             .ToArray();
 
         // Define color
+        // TODO: have color scale logarithmically across all possibilities...
         var colors = new Color[bonePositions.Length];
-        var targetIndex = VocabularyProvider.GetVocabArrayJustLetters().ToList().IndexOf(char.ToLower(_tm.GetTargetCharacter()[0]));
-        Debug.Log($"targetIndex: {targetIndex}");
-        //var targetIndex = 0;
-        var (_, aggregateValues) = _gm.GetMeanAndAggregateResults();
-        var delta = _gm.GetBoneDeltaValues(in aggregateValues, in targetIndex).Sum();
-        //for (var i = 0; i < deltas.Length; i++) Debug.Log($"i: {i}, deltas[i]: {deltas[i]}");
-        //Debug.Log($"Delta: {delta}");
-        var value = (Mathf.Clamp(delta, 1.5f, 5f) - 1f) / (5f - 1.5f);
-        Debug.Log($"value: {value}");
+        var delta = VocabularyProvider.GetVocabJustLetters().Length - 1 - _rm.GetResults().Keys.ToList().IndexOf(char.ToLower(_tm.GetTargetCharacter()[0]));
+        //for (var i = 0; i < _rm.GetResults().Keys.ToList().Count; i++) Debug.Log($"i: {i}, GetResults[i]: {_rm.GetResults().Keys.ToList()[i]}");
+        //Debug.Log($"Delta: {_rm.GetResults().Keys.ToArray()[0]}");
+        var value = Mathf.Clamp(delta, 0f, 3f) / 3f;
+        //Debug.Log($"value: {delta}");
         var color = new Color(255f * value, 255f * (1f - value), 0f, 255f);
 
         for (var i = 0; i < _effects.Length; i++)
         {
-            //_effects[i].SetVector3("ParticlePosition", bonePositions[i]);
             _effects[i].gameObject.transform.position = bonePositions[i];
-            _effects[i].SetVector4("ParticleColor", color);  //colors[i]
+            _effects[i].SetVector4("ParticleColor", color);
         }
     }
 
     public void BeginDrawParticles()
     {
-        _hp.UseRightHand();  // TODO: remover later...
+        //_hp.UseRightHand();  // TODO: remover later...
         _activeHand = _hp.GetActiveHand();
         //Debug.Log($"_activeHand: {_activeHand}");
 

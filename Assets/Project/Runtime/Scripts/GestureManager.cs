@@ -10,6 +10,7 @@ public class GestureManager : MonoBehaviour
 {
     [SerializeField] private int boneCount;
     [SerializeField] private int captureInterval;
+    [SerializeField] private int processInterval;
 
     private HandProvider _handProvider;
     private TextManager _tm;
@@ -21,6 +22,7 @@ public class GestureManager : MonoBehaviour
     private Vector3 _handRootPosition;
 
     private float[] _result;
+    private int _processCount;
 
     private void Start()
     {
@@ -35,6 +37,7 @@ public class GestureManager : MonoBehaviour
     {
         _boneCaptures = new Vector3[captureInterval, boneCount];
         _captureIndex = 0;
+        _result = new float[TargetVectors.all.GetLength(0)];
     }
 
     private void Update()
@@ -46,6 +49,16 @@ public class GestureManager : MonoBehaviour
             _boneCaptures[_captureIndex, i] = _handRootPosition - bones[i].Transform.position;
 
         _captureIndex++;
+        _processCount++;
+
+        if (_processCount > processInterval)
+        {
+            _processCount = 0;
+
+            Debug.Log("PROCESSED");
+            var (_, aggregateValues) = GetMeanAndAggregateResults();
+            _result = GetDeltaValues(in aggregateValues);
+        }
     }
 
     public void BeginGestureCapture()
