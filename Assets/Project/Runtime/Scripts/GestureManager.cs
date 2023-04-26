@@ -92,7 +92,7 @@ public class GestureManager : MonoBehaviour
         return totalDeltas;
     }
 
-    private List<float> GetBoneDeltaValues(in Vector3[] boneCaptures, in int vocabIndex)
+    public List<float> GetBoneDeltaValues(in Vector3[] boneCaptures, in int vocabIndex)
     {
         var boneCount = TargetVectors.all.GetLength(1);
         var delta = new List<float>(boneCount);

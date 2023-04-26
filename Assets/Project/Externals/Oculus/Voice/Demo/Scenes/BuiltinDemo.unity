@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 72142381ac12178428d7804c88f7c131, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: 72142381ac12178428d7804c88f7c131,
+    type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -167,9 +168,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2d3ff93ff48bd40ab5bca3cf4e6d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wit: {fileID: 737401905}
+  Voice: {fileID: 737401905}
+  ValidateEarly: 0
   intent: wit$pause_timer
-  confidence: 0.6
+  confidenceThreshold: 0.6
   onIntentTriggered:
     m_PersistentCalls:
       m_Calls:
@@ -316,9 +318,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2d3ff93ff48bd40ab5bca3cf4e6d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wit: {fileID: 737401905}
+  Voice: {fileID: 737401905}
+  ValidateEarly: 0
   intent: wit$create_timer
-  confidence: 0.9
+  confidenceThreshold: 0.9
   onIntentTriggered:
     m_PersistentCalls:
       m_Calls:
@@ -380,7 +383,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 591c3d6f017c11b4faa41506d75635b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wit: {fileID: 737401905}
+  Voice: {fileID: 737401905}
+  ValidateEarly: 0
   intent: wit$subtract_time_timer
   confidenceThreshold: 0.6
   valueMatchers:
@@ -391,6 +395,7 @@ MonoBehaviour:
     comparisonMethod: 0
     matchValue: 
     floatingPointComparisonTolerance: 0.00009999999747378752
+    allowConfidenceOverlap: 0
     confidenceRanges: []
   - path: entities.wit$duration:duration[0].unit
     witValueReference: {fileID: 0}
@@ -399,6 +404,7 @@ MonoBehaviour:
     comparisonMethod: 0
     matchValue: 
     floatingPointComparisonTolerance: 0.00009999999747378752
+    allowConfidenceOverlap: 0
     confidenceRanges: []
   formattedValueEvents: []
   onMultiValueEvent:
@@ -685,9 +691,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2d3ff93ff48bd40ab5bca3cf4e6d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wit: {fileID: 737401905}
+  Voice: {fileID: 737401905}
+  ValidateEarly: 0
   intent: wit$resume_timer
-  confidence: 0.6
+  confidenceThreshold: 0.6
   onIntentTriggered:
     m_PersistentCalls:
       m_Calls:
@@ -749,7 +756,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 591c3d6f017c11b4faa41506d75635b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wit: {fileID: 737401905}
+  Voice: {fileID: 737401905}
+  ValidateEarly: 0
   intent: wit$create_timer
   confidenceThreshold: 0.6
   valueMatchers:
@@ -760,6 +768,7 @@ MonoBehaviour:
     comparisonMethod: 0
     matchValue: 
     floatingPointComparisonTolerance: 0.00009999999747378752
+    allowConfidenceOverlap: 0
     confidenceRanges: []
   - path: entities.wit$duration:duration[0].unit
     witValueReference: {fileID: 0}
@@ -768,6 +777,7 @@ MonoBehaviour:
     comparisonMethod: 0
     matchValue: 
     floatingPointComparisonTolerance: 0.00009999999747378752
+    allowConfidenceOverlap: 0
     confidenceRanges: []
   formattedValueEvents: []
   onMultiValueEvent:
@@ -967,51 +977,63 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1934948696}
     m_Modifications:
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.19318089
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.23133183
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalPosition.z
       value: 10.433537
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalRotation.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8853415545987821519, guid: 0381539164984dc4ca193f001869c526, type: 3}
+    - target: {fileID: 8853415545987821519, guid: 0381539164984dc4ca193f001869c526,
+        type: 3}
       propertyPath: m_Name
       value: Environment
       objectReference: {fileID: 0}
@@ -1019,7 +1041,8 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 0381539164984dc4ca193f001869c526, type: 3}
 --- !u!4 &842905515 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8853415545987821512, guid: 0381539164984dc4ca193f001869c526,
+    type: 3}
   m_PrefabInstance: {fileID: 842905514}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &885437325
@@ -1250,7 +1273,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 591c3d6f017c11b4faa41506d75635b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wit: {fileID: 737401905}
+  Voice: {fileID: 737401905}
+  ValidateEarly: 0
   intent: wit$add_time_timer
   confidenceThreshold: 0.6
   valueMatchers:
@@ -1261,6 +1285,7 @@ MonoBehaviour:
     comparisonMethod: 0
     matchValue: 
     floatingPointComparisonTolerance: 0.00009999999747378752
+    allowConfidenceOverlap: 0
     confidenceRanges: []
   - path: entities.wit$duration:duration[0].unit
     witValueReference: {fileID: 0}
@@ -1269,6 +1294,7 @@ MonoBehaviour:
     comparisonMethod: 0
     matchValue: 
     floatingPointComparisonTolerance: 0.00009999999747378752
+    allowConfidenceOverlap: 0
     confidenceRanges: []
   formattedValueEvents: []
   onMultiValueEvent:
@@ -1703,9 +1729,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2d3ff93ff48bd40ab5bca3cf4e6d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wit: {fileID: 737401905}
+  Voice: {fileID: 737401905}
+  ValidateEarly: 0
   intent: wit$delete_timer
-  confidence: 0.6
+  confidenceThreshold: 0.6
   onIntentTriggered:
     m_PersistentCalls:
       m_Calls:
