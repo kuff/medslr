@@ -26,8 +26,8 @@ public class ParticleManager : MonoBehaviour
         // Set effect attributes
         foreach (var effect in _effects)
         {
-            effect.SetInt("MaxSpawnRate", 10);
-            effect.SetFloat("PercentageMaxSpawnRate", 1);
+            effect.SetInt("MaxSpawnRate", 1);
+            effect.SetFloat("PercentageMaxSpawnRate", 1f);
         }
     }
 
