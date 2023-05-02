@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class ResultsManager : MonoBehaviour
@@ -48,6 +49,18 @@ public class ResultsManager : MonoBehaviour
         var sortedDictionary = dictionary
             .OrderBy(x => -x.Value)
             .ToDictionary(x => x.Key, x => x.Value);
+
+        // Log result
+        // TODO: Will need refactor if this method is called more than once per inference window
+        var gestureString = new StringBuilder();
+        var inferenceString = new StringBuilder();
+        var resultString = new StringBuilder();
+        for (var i = 0; i < gestureResult.Count; i++) gestureString.AppendFormat("{0} ", gestureResult[i]);
+        HandLogger.Log(HandLogger.LogType.GestureResult, gestureString.ToString(), ignorePrevious: true);
+        for (var i = 0; i < inferenceResult.Length; i++) inferenceString.AppendFormat("{0} ", inferenceResult[i]);
+        HandLogger.Log(HandLogger.LogType.InferenceResult, inferenceString.ToString(), ignorePrevious: true);
+        for (var i = 0; i < dictionary.Values.Count; i++) resultString.AppendFormat("{0} ", dictionary.Values.ToArray()[i]);
+        HandLogger.Log(HandLogger.LogType.FusionResult, resultString.ToString(), ignorePrevious: true);
 
         return (sortedDictionary, gestureResult, inferenceResult);
     }

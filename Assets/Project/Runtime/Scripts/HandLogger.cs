@@ -28,7 +28,10 @@ public class HandLogger : MonoBehaviour
         StateChange,
         HandEvent,
         HandCapture,
-        SentenceTarget
+        SentenceTarget,
+        GestureResult,
+        InferenceResult,
+        FusionResult
     }
 
     private OVRPlugin.HandState _hsLeft = new OVRPlugin.HandState();
@@ -199,7 +202,6 @@ public class HandLogger : MonoBehaviour
                 // Ignored...
             }
         }
-        // _previousLogs[(int)type] = data;
         
         // Define the beginning of the log string with LogType and timestamp
         var baseString = "" + (int) (Time.realtimeSinceStartup * 10000) + " " + (int)type + " ";
@@ -233,9 +235,10 @@ public class HandLogger : MonoBehaviour
                 _logQueue.Add(baseString + (int)data![0]);
                 break;
             case LogType.HandCapture:
-                _logQueue.Add(baseString + string.Concat(data));
-                break;
             case LogType.SentenceTarget:
+            case LogType.GestureResult:
+            case LogType.InferenceResult:
+            case LogType.FusionResult:
                 _logQueue.Add(baseString + string.Concat(data));
                 break;
             default:
