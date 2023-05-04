@@ -31,7 +31,8 @@ public class HandLogger : MonoBehaviour
         SentenceTarget,
         GestureResult,
         InferenceResult,
-        FusionResult
+        FusionResult,
+        InitialBonePositions
     }
 
     private OVRPlugin.HandState _hsLeft = new OVRPlugin.HandState();
@@ -239,6 +240,7 @@ public class HandLogger : MonoBehaviour
             case LogType.GestureResult:
             case LogType.InferenceResult:
             case LogType.FusionResult:
+            case LogType.InitialBonePositions:
                 _logQueue.Add(baseString + string.Concat(data));
                 break;
             default:

@@ -68,6 +68,15 @@ public class GestureManager : MonoBehaviour
         _activeHand = _handProvider.GetActiveHand();
         _handRootPosition = _activeHand.Bones[0].Transform.position;
 
+        // Capture initial bone positions
+        var positions = "";
+        for (var i = 0; i < boneCount; i++)
+        {
+            var delta = _handRootPosition - _activeHand.Bones[i].Transform.position;
+            positions += $"{delta.x} {delta.y} {delta.z}; ";
+        }
+        HandLogger.Log(HandLogger.LogType.InitialBonePositions, positions, ignorePrevious: true);
+
         _captureGestures = true;
     }
 
