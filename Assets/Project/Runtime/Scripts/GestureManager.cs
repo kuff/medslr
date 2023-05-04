@@ -73,7 +73,7 @@ public class GestureManager : MonoBehaviour
         for (var i = 0; i < boneCount; i++)
         {
             var delta = _handRootPosition - _activeHand.Bones[i].Transform.position;
-            positions += $"{delta.x} {delta.y} {delta.z}; ";
+            positions += $"{delta.x} {delta.y} {delta.z} ";
         }
         HandLogger.Log(HandLogger.LogType.InitialBonePositions, positions, ignorePrevious: true);
 
