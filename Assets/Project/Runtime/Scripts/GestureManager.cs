@@ -55,7 +55,6 @@ public class GestureManager : MonoBehaviour
         {
             _processCount = 0;
 
-            Debug.Log("PROCESSED");
             var (_, aggregateValues) = GetMeanAndAggregateResults();
             _result = GetDeltaValues(in aggregateValues);
         }

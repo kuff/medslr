@@ -16,23 +16,23 @@ public class HandLogger : MonoBehaviour
 
     public enum LogType
     {
-        FPS,
-        LeftHand,
-        RightHand,
-        Head,
-        Focus,
-        Memory,
-        Quit,
-        Time,
-        WizardDecision,
-        StateChange,
-        HandEvent,
-        HandCapture,
-        SentenceTarget,
-        GestureResult,
-        InferenceResult,
-        FusionResult,
-        InitialBonePositions
+        FPS,                  //  0
+        LeftHand,             //  1
+        RightHand,            //  2
+        Head,                 //  3
+        Focus,                //  4
+        Memory,               //  5
+        Quit,                 //  6
+        Time,                 //  7
+        WizardDecision,       //  8
+        StateChange,          //  9
+        HandEvent,            // 10
+        HandCapture,          // 11
+        SentenceTarget,       // 12
+        GestureResult,        // 13
+        InferenceResult,      // 14
+        FusionResult,         // 15
+        InitialBonePositions  // 16
     }
 
     private OVRPlugin.HandState _hsLeft = new OVRPlugin.HandState();
