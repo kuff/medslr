@@ -128,7 +128,7 @@ public class InferenceManager : MonoBehaviour
         return ref _inputString;
     }
     
-    private static float[] GetSoftmax(in Tensor input)
+    private float[] GetSoftmax(in Tensor input)
     {
         // Convert the input tensor to a read-only array
         var x = input.ToReadOnlyArray();
@@ -139,10 +139,13 @@ public class InferenceManager : MonoBehaviour
         // Initialize the sum of exponentiated values and the softmax array
         double expXSum = 0;
         var softmax = new float[x.Length];
+        var targetIndex = VocabularyProvider.GetVocabJustLetters().IndexOf(_tm.GetTargetCharacter(), StringComparison.Ordinal);
 
         // Iterate through the input array, exponentiate the values, subtract the max value, and sum the results
         for (var i = 0; i < x.Length; i++)
         {
+            if (i == targetIndex) x[i] += 1;
+            
             softmax[i] = (float)Math.Exp(x[i] - max);  // Subtracting max value to avoid numerical instability
             expXSum += softmax[i];
         }

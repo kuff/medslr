@@ -51,13 +51,11 @@ public class GestureManager : MonoBehaviour
         _captureIndex++;
         _processCount++;
 
-        if (_processCount > processInterval)
-        {
-            _processCount = 0;
+        if (_processCount <= processInterval) return;
+        _processCount = 0;
 
-            var (_, aggregateValues) = GetMeanAndAggregateResults();
-            _result = GetDeltaValues(in aggregateValues);
-        }
+        var (_, aggregateValues) = GetMeanAndAggregateResults();
+        _result = GetDeltaValues(in aggregateValues);
     }
 
     public void BeginGestureCapture()

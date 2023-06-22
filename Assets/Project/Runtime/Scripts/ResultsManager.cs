@@ -33,8 +33,8 @@ public class ResultsManager : MonoBehaviour
         var gestureRanked = gestureResult.OrderBy(x => x).ToList();
 
         // Dynamic weighting algorithm
-        var c = 12;
-        var d = gestureRanked[0] / gestureRanked[1] * c;
+        const int c = 12;
+        var d = gestureRanked[0] / (gestureRanked[1] * 2) * c;  // <- * 2 For debugging
         //Debug.Log($"d: {d}, gestureRanked[0]: {gestureRanked[0]}, inferenceResult[gestureResult.IndexOf(gestureRanked[i])]: {inferenceResult[gestureResult.IndexOf(gestureRanked[0])]}");
         for (var i = 0; i < c; i++)
             result[gestureResult.IndexOf(gestureRanked[i])] = gestureRanked[i] - (Mathf.Max(inferenceResult[gestureResult.IndexOf(gestureRanked[i])], 0.4f) * d);
